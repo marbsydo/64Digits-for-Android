@@ -31,9 +31,27 @@ import com.squareup.picasso.Picasso;
 
 public class MainActivity extends Activity {
 
+	ArrayList<FrontPageItemData> frontPageData;
 	ProgressDialog pd;
-	public Context context = this;
+	public Context mainActivityContext = this;
+	public MainActivity mainActivity = this;
 
+	public MainActivity() {
+		super();
+		frontPageData = new ArrayList<FrontPageItemData>();
+	}
+	
+	public void addFrontPageItem(FrontPageItemData frontPageItem) {
+		frontPageData.add(frontPageItem);
+	}
+	
+	public void regenerateFrontPage() {
+		final ListView listview = (ListView) findViewById(R.id.listview);
+		final FrontPageItemAdapter adapter = new FrontPageItemAdapter(
+				this, R.layout.frontpage_item, frontPageData);
+		listview.setAdapter(adapter);
+	}
+	
 	// Data for each item on the front page
 	public class FrontPageItemData {
 		String imageUrl;
@@ -129,7 +147,7 @@ public class MainActivity extends Activity {
 					+ " comment" + (num == 1 ? "" : "s") + ")");
 
 			// Tell Picasso to load the avatar into the image view
-			Picasso.with(context).load(item.GetImageUrl())
+			Picasso.with(mainActivityContext).load(item.GetImageUrl())
 					.into(holder.imageViewAvatar);
 
 			return itemView;
@@ -154,7 +172,7 @@ public class MainActivity extends Activity {
 			super.onPreExecute();
 			pd = new ProgressDialog(MainActivity.this);
 			pd.setTitle("Retrieve 64D Front Page");
-			pd.setMessage("Loading...");
+			pd.setMessage("Loading page " + this.page + "...");
 			pd.setIndeterminate(false);
 			pd.show();
 		}
@@ -261,13 +279,19 @@ public class MainActivity extends Activity {
 
 		@Override
 		protected void onPostExecute(Void result) {
-
-			final ListView listview = (ListView) findViewById(R.id.listview);
-			final FrontPageItemAdapter adapter = new FrontPageItemAdapter(
-					context, R.layout.frontpage_item, frontPageData);
-			listview.setAdapter(adapter);
+			
+			for (int i = 0; i < frontPageData.size(); ++i) {
+				mainActivity.addFrontPageItem(frontPageData.get(i));
+			}
+			mainActivity.regenerateFrontPage();
 
 			pd.dismiss();
+			
+			// Load first 3 pages
+			this.page++;
+			if (this.page < 3) {
+				new FrontPage(this.page).execute();
+			}
 		}
 	}
 }
