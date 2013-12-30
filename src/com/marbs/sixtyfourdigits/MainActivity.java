@@ -85,8 +85,8 @@ public class MainActivity extends Activity {
 				  
 				  holder = new ViewHolder();
 				  
-				  holder.text1 = (TextView)itemView.findViewById(R.id.firstLine);
-				  holder.text2 = (TextView)itemView.findViewById(R.id.secondLine);
+				  holder.text1 = (TextView)itemView.findViewById(R.id.textTitle);
+				  holder.text2 = (TextView)itemView.findViewById(R.id.textAuthor);
 				  
 				  itemView.setTag(holder);
 			  } else {
@@ -155,16 +155,12 @@ public class MainActivity extends Activity {
 	    			Document doc = Jsoup.connect("http://www.64digits.com").timeout(3000).get();
 	    			Elements frontPageBlogs = doc.select("div.middlecontent div.fnt11.fntgrey");
 	    			for (Element blog : frontPageBlogs) {
-	    				// Read author
+	    				Element title = blog.select("div.lnknodec.fntblue.fntbold.fnt15").first();
 	    				Element author = blog.select("div.fnt10.floatright").first();
-	    				//authors.add(author.text());
-	    				
-	    				// Read blog preview
-	    				Element title = blog.select("div.fnt12.fntgrey").first();
-	    				//blogPreviews.add(blogPreview.text());
 	    				frontPageData.add(new FrontPageItemData(title.text(), author.text()));
 	    			}
 	    		} catch (IOException e) {
+	    			//frontPageData.add(new FrontPageItemData("Error", "more errors!"));
 	    			e.printStackTrace();
 	    		}
 
