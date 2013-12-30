@@ -128,33 +128,6 @@ public class MainActivity extends Activity {
 			  return itemView;
 		  }
 	  }
-	  
-	  /*
-	  private class StableArrayAdapter extends ArrayAdapter<String> {
-
-	    HashMap<String, Integer> mIdMap = new HashMap<String, Integer>();
-
-	    public StableArrayAdapter(Context context, int textViewResourceId, int asdf,
-		        List<String> objects) {
-		      super(context, textViewResourceId, asdf, objects);
-		      for (int i = 0; i < objects.size(); ++i) {
-		        mIdMap.put(objects.get(i), i);
-		      }
-		    }
-
-	    @Override
-	    public long getItemId(int position) {
-	      String item = getItem(position);
-	      return mIdMap.get(item);
-	    }
-
-	    @Override
-	    public boolean hasStableIds() {
-	      return true;
-	    }
-
-	  }
-	  */
 
 	    private class FrontPage extends AsyncTask<Void, Void, Void> {
 	    	
@@ -270,12 +243,6 @@ public class MainActivity extends Activity {
 	    			e.printStackTrace();
 	    		}
 	    		*/
-
-	    	    /*
-	    	    final StableArrayAdapter adapter = new StableArrayAdapter(context,
-	    	    		android.R.layout.simple_list_item_1, list);
-	    	    listview.setAdapter(adapter);
-	    	    */
 	    		
 	    	    /*
 	    listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -309,14 +276,6 @@ public class MainActivity extends Activity {
 	    		editText.setText(desc);
 	    		*/
 	    		final ListView listview = (ListView) findViewById(R.id.listview);
-	    	    //final StableArrayAdapter adapter = new StableArrayAdapter(context,
-	    	    //		android.R.layout.simple_list_item_1, list);
-	    	    //final StableArrayAdapter adapter = new StableArrayAdapter(context,
-	    	    //		R.layout.frontpage_item, R.id.secondLine, authors);
-	    	    //listview.setAdapter(adapter);
-	    	    
-	    	    //listview.setAdapter(new StableArrayAdapter(context, R.layout.frontpage_item, R.id.firstLine, blogPreviews));
-	    	    
 	    		final FrontPageItemAdapter adapter = new FrontPageItemAdapter(context, R.layout.frontpage_item, frontPageData);
 	    		listview.setAdapter(adapter);
 	    		
