@@ -2,7 +2,6 @@ package com.marbs.sixtyfourdigits;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import org.jsoup.Jsoup;
@@ -15,13 +14,39 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 
 public class MainActivity extends Activity {
 
 	ProgressDialog pd;
 	Context context = this;
+	
+	// Data for each item on the front page
+	public class FrontPageItemData {
+		//String image;
+		String title;
+		String excerpt;
+		String author;
+		int numComments;
+		
+		public FrontPageItemData(String title, String author) {
+			this.title = title;
+			this.author = author;
+		}
+		
+		public String GetTitle() {
+			return title;
+		}
+		
+		public String GetAuthor() {
+			return author;
+		}
+	}
 	
 	  @Override
 	  protected void onCreate(Bundle savedInstanceState) {
@@ -31,6 +56,51 @@ public class MainActivity extends Activity {
 	    new FrontPage().execute();
 	  }
 
+	  private static class FrontPageItemAdapter extends ArrayAdapter<FrontPageItemData> {
+		  
+		  private static class ViewHolder {
+			  private TextView text1;
+			  private TextView text2;
+			  
+			  public ViewHolder() {
+				  // Do nothing
+			  }
+		  }
+		  
+		  private final LayoutInflater inflater;
+		  
+		  public FrontPageItemAdapter(Context context, int textViewResourceId, List<FrontPageItemData> itemData) {
+			  super(context, textViewResourceId, itemData);
+			  
+			  this.inflater = LayoutInflater.from(context);
+		  }
+		  
+		  @Override
+		  public View getView(final int position, final View convertView, final ViewGroup parent) {
+			  View itemView = convertView;
+			  ViewHolder holder = null;
+			  final FrontPageItemData item = getItem(position);
+			  if (null == itemView) {
+				  itemView = this.inflater.inflate(R.layout.frontpage_item, parent, false);
+				  
+				  holder = new ViewHolder();
+				  
+				  holder.text1 = (TextView)itemView.findViewById(R.id.firstLine);
+				  holder.text2 = (TextView)itemView.findViewById(R.id.secondLine);
+				  
+				  itemView.setTag(holder);
+			  } else {
+				  holder = (ViewHolder)itemView.getTag();
+			  }
+			  
+			  holder.text1.setText(item.GetTitle());
+			  holder.text2.setText(item.GetAuthor());
+			  
+			  return itemView;
+		  }
+	  }
+	  
+	  /*
 	  private class StableArrayAdapter extends ArrayAdapter<String> {
 
 	    HashMap<String, Integer> mIdMap = new HashMap<String, Integer>();
@@ -42,15 +112,6 @@ public class MainActivity extends Activity {
 		        mIdMap.put(objects.get(i), i);
 		      }
 		    }
-	    /*
-	    public StableArrayAdapter(Context context, int textViewResourceId,
-	        List<String> objects) {
-	      super(context, textViewResourceId, objects);
-	      for (int i = 0; i < objects.size(); ++i) {
-	        mIdMap.put(objects.get(i), i);
-	      }
-	    }
-	    */
 
 	    @Override
 	    public long getItemId(int position) {
@@ -64,11 +125,13 @@ public class MainActivity extends Activity {
 	    }
 
 	  }
+	  */
 
 	    private class FrontPage extends AsyncTask<Void, Void, Void> {
 	    	
-	    	ArrayList<String> authors;
-	    	ArrayList<String> blogPreviews;
+	    	//ArrayList<String> authors;
+	    	//ArrayList<String> blogPreviews;
+	    	ArrayList<FrontPageItemData> frontPageData;
 	    	
 	    	@Override
 	    	protected void onPreExecute() {
@@ -84,8 +147,9 @@ public class MainActivity extends Activity {
 	    	protected Void doInBackground(Void... params) {
 	    	    
 	    	    
-	    	    authors = new ArrayList<String>();
-	    	    blogPreviews = new ArrayList<String>();
+	    	    //authors = new ArrayList<String>();
+	    	    //blogPreviews = new ArrayList<String>();
+	    		frontPageData = new ArrayList<FrontPageItemData>();
 	    	    
 	    		try {
 	    			Document doc = Jsoup.connect("http://www.64digits.com").timeout(3000).get();
@@ -93,11 +157,12 @@ public class MainActivity extends Activity {
 	    			for (Element blog : frontPageBlogs) {
 	    				// Read author
 	    				Element author = blog.select("div.fnt10.floatright").first();
-	    				authors.add(author.text());
+	    				//authors.add(author.text());
 	    				
 	    				// Read blog preview
-	    				Element blogPreview = blog.select("div.fnt12.fntgrey").first();
-	    				blogPreviews.add(blogPreview.text());
+	    				Element title = blog.select("div.fnt12.fntgrey").first();
+	    				//blogPreviews.add(blogPreview.text());
+	    				frontPageData.add(new FrontPageItemData(title.text(), author.text()));
 	    			}
 	    		} catch (IOException e) {
 	    			e.printStackTrace();
@@ -143,17 +208,20 @@ public class MainActivity extends Activity {
 	    		final ListView listview = (ListView) findViewById(R.id.listview);
 	    	    //final StableArrayAdapter adapter = new StableArrayAdapter(context,
 	    	    //		android.R.layout.simple_list_item_1, list);
-	    	    final StableArrayAdapter adapter = new StableArrayAdapter(context,
-	    	    		R.layout.frontpage_item, R.id.secondLine, authors);
-	    	    listview.setAdapter(adapter);
+	    	    //final StableArrayAdapter adapter = new StableArrayAdapter(context,
+	    	    //		R.layout.frontpage_item, R.id.secondLine, authors);
+	    	    //listview.setAdapter(adapter);
 	    	    
 	    	    //listview.setAdapter(new StableArrayAdapter(context, R.layout.frontpage_item, R.id.firstLine, blogPreviews));
 	    	    
+	    		final FrontPageItemAdapter adapter = new FrontPageItemAdapter(context, R.layout.frontpage_item, frontPageData);
+	    		listview.setAdapter(adapter);
+	    		
 	    	    pd.dismiss();
 	    	}
 	    }
 	  
-	} 
+	}
 
 /*
 public class MainActivity extends Activity {
