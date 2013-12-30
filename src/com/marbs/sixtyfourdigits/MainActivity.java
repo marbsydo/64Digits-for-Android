@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -23,6 +24,8 @@ import android.widget.TextView;
 
 public class MainActivity extends Activity {
 
+	public final static String SITE_PATH = "http://www.64digits.com";
+	
 	ProgressDialog pd;
 	Context context = this;
 	
@@ -151,6 +154,63 @@ public class MainActivity extends Activity {
 	    	    //blogPreviews = new ArrayList<String>();
 	    		frontPageData = new ArrayList<FrontPageItemData>();
 	    	    
+	    		boolean errorOccurred = false;
+	    		String errorString = "";
+	    		
+	    		Connection.Response response;
+	    		try {
+	    			response = Jsoup.connect(SITE_PATH)
+							.userAgent("Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/535.21 (KHTML, like Gecko) Chrome/19.0.1042.0 Safari/535.21")
+							.timeout(10000)
+							.execute();
+				} catch (IOException e) {
+					response = null;
+					System.out.println("Error: could not connect");
+					errorOccurred = true;
+					errorString = "Could not connect";
+					e.printStackTrace();
+				}
+	    		
+	    		if (response != null) {
+	    			int statusCode = response.statusCode();
+	    			if (statusCode == 200) { // OK
+	    				Document doc;
+	    				try {
+							doc = response.parse();
+						} catch (IOException e) {
+							doc = null;
+							System.out.println("Error: Could not parse data");
+							errorOccurred = true;
+							errorString = "Could not parse data";
+							e.printStackTrace();
+						}
+	    				
+	    				if (doc != null) {
+	    	    			Elements frontPageBlogs = doc.select("div.middlecontent div.fnt11.fntgrey");
+	    	    			for (Element blog : frontPageBlogs) {
+	    	    				try {
+	    	    					String title = blog.select("div.lnknodec.fntblue.fntbold.fnt15").first().text();
+	    	    					String author = blog.select("div.fnt10.floatright").first().text();
+	    	    					frontPageData.add(new FrontPageItemData(title, author));
+	    	    				} catch (Exception e) {
+	    	    					System.out.println("Error: Selecting threw error: " + e);
+	    	    					errorOccurred = true;
+	    	    					errorString = "Could not select parsed data";
+	    	    				}
+	    	    			}
+	    				}
+	    			} else {
+	    				System.out.println("Error: Received status code: " + statusCode);
+						errorOccurred = true;
+						errorString = "Received status code " + statusCode;
+	    			}
+	    		}
+	    		
+	    		if (errorOccurred) {
+	    			frontPageData.add(new FrontPageItemData("Error!", errorString));
+	    		}
+	    		
+	    		/*
 	    		try {
 	    			Document doc = Jsoup.connect("http://www.64digits.com").timeout(3000).get();
 	    			Elements frontPageBlogs = doc.select("div.middlecontent div.fnt11.fntgrey");
@@ -163,6 +223,7 @@ public class MainActivity extends Activity {
 	    			//frontPageData.add(new FrontPageItemData("Error", "more errors!"));
 	    			e.printStackTrace();
 	    		}
+	    		*/
 
 	    	    /*
 	    	    final StableArrayAdapter adapter = new StableArrayAdapter(context,
