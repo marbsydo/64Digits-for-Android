@@ -130,9 +130,7 @@ public class MainActivity extends Activity {
 	  }
 
 	    private class FrontPage extends AsyncTask<Void, Void, Void> {
-	    	
-	    	//ArrayList<String> authors;
-	    	//ArrayList<String> blogPreviews;
+
 	    	ArrayList<FrontPageItemData> frontPageData;
 	    	
 	    	@Override
@@ -147,10 +145,7 @@ public class MainActivity extends Activity {
 	    	
 	    	@Override
 	    	protected Void doInBackground(Void... params) {
-	    	    
-	    	    
-	    	    //authors = new ArrayList<String>();
-	    	    //blogPreviews = new ArrayList<String>();
+
 	    		frontPageData = new ArrayList<FrontPageItemData>();
 	    	    
 	    		boolean errorOccurred = false;
@@ -228,53 +223,13 @@ public class MainActivity extends Activity {
 	    		if (errorOccurred) {
 	    			frontPageData.add(new FrontPageItemData("Error!", errorString, -1, ""));
 	    		}
-	    		
-	    		/*
-	    		try {
-	    			Document doc = Jsoup.connect("http://www.64digits.com").timeout(3000).get();
-	    			Elements frontPageBlogs = doc.select("div.middlecontent div.fnt11.fntgrey");
-	    			for (Element blog : frontPageBlogs) {
-	    				Element title = blog.select("div.lnknodec.fntblue.fntbold.fnt15").first();
-	    				Element author = blog.select("div.fnt10.floatright").first();
-	    				frontPageData.add(new FrontPageItemData(title.text(), author.text()));
-	    			}
-	    		} catch (IOException e) {
-	    			//frontPageData.add(new FrontPageItemData("Error", "more errors!"));
-	    			e.printStackTrace();
-	    		}
-	    		*/
-	    		
-	    	    /*
-	    listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
-	      @Override
-	      public void onItemClick(AdapterView<?> parent, final View view,
-	          int position, long id) {
-	        final String item = (String) parent.getItemAtPosition(position);
-	        view.animate().setDuration(2000).alpha(0)
-	            .withEndAction(new Runnable() {
-	              @Override
-	              public void run() {
-	                list.remove(item);
-	                adapter.notifyDataSetChanged();
-	                view.setAlpha(1);
-	              }
-	            });
-	      }
-
-	    });
-	    	     */
 	    		return null;
 	    	}
 	    	
 	    	@Override
 	    	protected void onPostExecute(Void result) {
-	    		/*
-	    		Button titleButton = (Button) findViewById(R.id.get_title);
-	    		titleButton.setText(title);
-	    		EditText editText = (EditText) findViewById(R.id.edit_message);
-	    		editText.setText(desc);
-	    		*/
+
 	    		final ListView listview = (ListView) findViewById(R.id.listview);
 	    		final FrontPageItemAdapter adapter = new FrontPageItemAdapter(context, R.layout.frontpage_item, frontPageData);
 	    		listview.setAdapter(adapter);
