@@ -3,6 +3,8 @@ package com.marbs.sixtyfourdigits;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
@@ -37,9 +39,10 @@ public class MainActivity extends Activity {
 		String author;
 		int numComments;
 		
-		public FrontPageItemData(String title, String author) {
+		public FrontPageItemData(String title, String author, int numComments) {
 			this.title = title;
 			this.author = author;
+			this.numComments = numComments;
 		}
 		
 		public String GetTitle() {
@@ -189,9 +192,16 @@ public class MainActivity extends Activity {
 	    	    			Elements frontPageBlogs = doc.select("div.middlecontent div.fnt11.fntgrey");
 	    	    			for (Element blog : frontPageBlogs) {
 	    	    				try {
-	    	    					String title = blog.select("div.lnknodec.fntblue.fntbold.fnt15").first().text();
-	    	    					String author = blog.select("div.fnt10.floatright").first().text();
-	    	    					frontPageData.add(new FrontPageItemData(title, author));
+	    	    					String title = blog.select("a.lnknodec.fntblue.fntbold.fnt15").first().text();
+	    	    					String author = blog.select("a.fntblue").get(1).text();
+	    	    					String numCommentsString = blog.select("a.fntblue").get(2).text();
+	    	    					int numComments = -1;
+	    	    					Pattern p = Pattern.compile("\\d+");
+	    	    					Matcher m = p.matcher(numCommentsString);
+	    	    					if (m.find()) {
+	    	    						numComments = Integer.parseInt(m.group());
+	    	    					}
+	    	    					frontPageData.add(new FrontPageItemData(title, author, numComments));
 	    	    				} catch (Exception e) {
 	    	    					System.out.println("Error: Selecting threw error: " + e);
 	    	    					errorOccurred = true;
@@ -207,7 +217,7 @@ public class MainActivity extends Activity {
 	    		}
 	    		
 	    		if (errorOccurred) {
-	    			frontPageData.add(new FrontPageItemData("Error!", errorString));
+	    			frontPageData.add(new FrontPageItemData("Error!", errorString, -1));
 	    		}
 	    		
 	    		/*
