@@ -1,6 +1,8 @@
 package com.marbs.sixtyfourdigits;
 
 import java.io.IOException;
+import java.net.URI;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -30,7 +32,7 @@ import com.squareup.picasso.Picasso;
 
 public class MainActivity extends Activity {
 
-	public final static String SITE_PATH = "http://www.64digits.com";
+	public final static String SITE_PATH = "http://www.64digits.com/index.php?id=0&cmd=&page=0";
 	
 	ProgressDialog pd;
 	public Context context = this;
@@ -234,6 +236,10 @@ public class MainActivity extends Activity {
 	    	    					
 	    	    					// Image URL
 	    	    					String imageUrl = blog.select("img").first().absUrl("src");
+	    	    					// Encode the URL so that e.g. spaces become %20s
+	    	    					URL url = new URL(imageUrl);
+	    	    					URI uri = new URI(url.getProtocol(), url.getUserInfo(), url.getHost(), url.getPort(), url.getPath(), url.getQuery(), url.getRef());
+	    	    					imageUrl = uri.toURL().toString();
 	    	    					
 	    	    					// Image bitmap
 	    	    					Bitmap imageBitmap = null;

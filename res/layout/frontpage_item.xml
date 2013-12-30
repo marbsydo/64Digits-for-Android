@@ -25,7 +25,7 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
         android:layout_toRightOf="@id/icon"
-        android:ellipsize="end"
+        android:ellipsize="start"
         android:singleLine="true"
         android:text="Author and number of comments"
         android:textSize="12sp" />
