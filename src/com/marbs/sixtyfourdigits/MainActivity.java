@@ -1,7 +1,6 @@
 package com.marbs.sixtyfourdigits;
 
 import java.io.IOException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -17,8 +16,6 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -29,12 +26,14 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.squareup.picasso.Picasso;
+
 public class MainActivity extends Activity {
 
 	public final static String SITE_PATH = "http://www.64digits.com";
 	
 	ProgressDialog pd;
-	Context context = this;
+	public Context context = this;
 	
 	// Data for each item on the front page
 	public class FrontPageItemData {
@@ -82,9 +81,9 @@ public class MainActivity extends Activity {
 	    new FrontPage().execute();
 	  }
 
-	  private static class FrontPageItemAdapter extends ArrayAdapter<FrontPageItemData> {
+	  private class FrontPageItemAdapter extends ArrayAdapter<FrontPageItemData> {
 		  
-		  private static class ViewHolder {
+		  private class ViewHolder {
 			  private TextView textViewTitle;
 			  private TextView textViewAuthor;
 			  private ImageView imageViewIcon;
@@ -126,7 +125,8 @@ public class MainActivity extends Activity {
 			  holder.textViewAuthor.setText(item.GetAuthor() + " (" + num + " comment" + (num == 1 ? "" : "s") + ")");
 			  //holder.imageViewIcon.setImageDrawable("@drawable/ic_launcher");
 			  //holder.imageViewIcon.setImageDrawable(Drawable.createFromPath(item.GetImageUrl()));
-			  holder.imageViewIcon.setImageBitmap(item.GetImageBitmap());
+			  //holder.imageViewIcon.setImageBitmap(item.GetImageBitmap());
+			  Picasso.with(context).load(item.GetImageUrl()).into(holder.imageViewIcon);
 			  return itemView;
 		  }
 	  }
@@ -237,6 +237,7 @@ public class MainActivity extends Activity {
 	    	    					
 	    	    					// Image bitmap
 	    	    					Bitmap imageBitmap = null;
+	    	    					/*
 	    	    					try {
 	    	    						imageBitmap = BitmapFactory.decodeStream((new URL(imageUrl)).openStream());
 	    	    					} catch (Exception e) {
@@ -244,6 +245,7 @@ public class MainActivity extends Activity {
 		    	    					errorOccurred = true;
 		    	    					errorString = "Could not download image";
 	    	    					}
+	    	    					*/
 	    	    					
 	    	    					frontPageData.add(new FrontPageItemData(title, author, numComments, imageUrl, imageBitmap));
 	    	    				} catch (Exception e) {
