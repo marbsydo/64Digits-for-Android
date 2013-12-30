@@ -52,6 +52,10 @@ public class MainActivity extends Activity {
 		public String GetAuthor() {
 			return author;
 		}
+		
+		public int GetNumComments() {
+			return numComments;
+		}
 	}
 	
 	  @Override
@@ -65,8 +69,8 @@ public class MainActivity extends Activity {
 	  private static class FrontPageItemAdapter extends ArrayAdapter<FrontPageItemData> {
 		  
 		  private static class ViewHolder {
-			  private TextView text1;
-			  private TextView text2;
+			  private TextView textViewTitle;
+			  private TextView textViewAuthor;
 			  
 			  public ViewHolder() {
 				  // Do nothing
@@ -91,16 +95,17 @@ public class MainActivity extends Activity {
 				  
 				  holder = new ViewHolder();
 				  
-				  holder.text1 = (TextView)itemView.findViewById(R.id.textTitle);
-				  holder.text2 = (TextView)itemView.findViewById(R.id.textAuthor);
+				  holder.textViewTitle = (TextView)itemView.findViewById(R.id.textTitle);
+				  holder.textViewAuthor = (TextView)itemView.findViewById(R.id.textAuthor);
 				  
 				  itemView.setTag(holder);
 			  } else {
 				  holder = (ViewHolder)itemView.getTag();
 			  }
-			  
-			  holder.text1.setText(item.GetTitle());
-			  holder.text2.setText(item.GetAuthor());
+
+			  holder.textViewTitle.setText(item.GetTitle());
+			  int num = item.GetNumComments();
+			  holder.textViewAuthor.setText("(" + num + " comment" + (num == 1 ? "" : "s") + ") " + item.GetAuthor());
 			  
 			  return itemView;
 		  }

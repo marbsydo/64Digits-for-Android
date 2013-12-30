@@ -21,7 +21,7 @@
         android:layout_toRightOf="@id/icon"
         android:ellipsize="marquee"
         android:singleLine="true"
-        android:text="Description"
+        android:text="Author and number of comments"
         android:textSize="12sp" />
 
     <TextView
@@ -36,7 +36,7 @@
         android:gravity="center_vertical"
         android:ellipsize="start"
         android:singleLine="true"
-        android:text="Example application"
+        android:text="Blog title"
         android:textSize="16sp" />
 
 </RelativeLayout>
