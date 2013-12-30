@@ -50,6 +50,7 @@ public class MainActivity extends Activity {
 			this.author = author;
 			this.numComments = numComments;
 			this.imageUrl = imageUrl;
+			this.imageBitmap = imageBitmap;
 		}
 		
 		public String GetTitle() {
