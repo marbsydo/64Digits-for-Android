@@ -31,8 +31,6 @@ import com.squareup.picasso.Picasso;
 
 public class MainActivity extends Activity {
 
-	public final static String SITE_PATH = "http://www.64digits.com/index.php?id=0&cmd=&page=0";
-
 	ProgressDialog pd;
 	public Context context = this;
 
@@ -74,7 +72,7 @@ public class MainActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 
-		new FrontPage().execute();
+		new FrontPage(0).execute();
 	}
 
 	private class FrontPageItemAdapter extends ArrayAdapter<FrontPageItemData> {
@@ -139,9 +137,18 @@ public class MainActivity extends Activity {
 	}
 
 	private class FrontPage extends AsyncTask<Void, Void, Void> {
-
+		
 		ArrayList<FrontPageItemData> frontPageData;
-
+		int page;
+		
+		public FrontPage(int page) {
+			this.page = page;
+		}
+		
+		public String generateFrontPageUrl(int page) {
+			return "http://www.64digits.com/index.php?id=0&cmd=&page=" + page;
+		}
+		
 		@Override
 		protected void onPreExecute() {
 			super.onPreExecute();
@@ -163,7 +170,7 @@ public class MainActivity extends Activity {
 			Connection.Response response;
 			try {
 				response = Jsoup
-						.connect(SITE_PATH)
+						.connect(generateFrontPageUrl(this.page))
 						.userAgent(
 								"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/535.21 (KHTML, like Gecko) Chrome/19.0.1042.0 Safari/535.21")
 						.timeout(10000).execute();
