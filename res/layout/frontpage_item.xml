@@ -9,7 +9,7 @@
         android:layout_height="fill_parent"
     -->
     
-    <ImageView android:id="@+id/icon"
+    <ImageView android:id="@+id/imageAvatar"
         android:layout_width="60dp"
         android:layout_height="60dp"
         android:layout_alignParentBottom="true"
@@ -24,8 +24,8 @@
         android:layout_height="30dip"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
-        android:layout_toRightOf="@id/icon"
-        android:ellipsize="start"
+        android:layout_toRightOf="@id/imageAvatar"
+        android:ellipsize="end"
         android:singleLine="true"
         android:text="Author and number of comments"
         android:textSize="12sp" />
@@ -38,7 +38,7 @@
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
         android:layout_alignWithParentIfMissing="true"
-        android:layout_toRightOf="@id/icon"
+        android:layout_toRightOf="@id/imageAvatar"
         android:gravity="center_vertical"
         android:ellipsize="end"
         android:singleLine="true"

@@ -17,7 +17,6 @@ import org.jsoup.select.Elements;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -40,18 +39,16 @@ public class MainActivity extends Activity {
 	// Data for each item on the front page
 	public class FrontPageItemData {
 		String imageUrl;
-		Bitmap imageBitmap;
 		String title;
 		String excerpt;
 		String author;
 		int numComments;
 		
-		public FrontPageItemData(String title, String author, int numComments, String imageUrl, Bitmap imageBitmap) {
+		public FrontPageItemData(String title, String author, int numComments, String imageUrl) {
 			this.title = title;
 			this.author = author;
 			this.numComments = numComments;
 			this.imageUrl = imageUrl;
-			this.imageBitmap = imageBitmap;
 		}
 		
 		public String GetTitle() {
@@ -69,10 +66,6 @@ public class MainActivity extends Activity {
 		public String GetImageUrl() {
 			return imageUrl;
 		}
-		
-		public Bitmap GetImageBitmap() {
-			return imageBitmap;
-		}
 	}
 	
 	  @Override
@@ -88,7 +81,7 @@ public class MainActivity extends Activity {
 		  private class ViewHolder {
 			  private TextView textViewTitle;
 			  private TextView textViewAuthor;
-			  private ImageView imageViewIcon;
+			  private ImageView imageViewAvatar;
 			  
 			  public ViewHolder() {
 				  // Do nothing
@@ -115,20 +108,23 @@ public class MainActivity extends Activity {
 				  
 				  holder.textViewTitle = (TextView)itemView.findViewById(R.id.textTitle);
 				  holder.textViewAuthor = (TextView)itemView.findViewById(R.id.textAuthor);
-				  holder.imageViewIcon = (ImageView)itemView.findViewById(R.id.icon);
+				  holder.imageViewAvatar = (ImageView)itemView.findViewById(R.id.imageAvatar);
 				  
 				  itemView.setTag(holder);
 			  } else {
 				  holder = (ViewHolder)itemView.getTag();
 			  }
 
+			  // Set the title text
 			  holder.textViewTitle.setText(item.GetTitle());
+			  
+			  // Set the author and number of comments text
 			  int num = item.GetNumComments();
 			  holder.textViewAuthor.setText(item.GetAuthor() + " (" + num + " comment" + (num == 1 ? "" : "s") + ")");
-			  //holder.imageViewIcon.setImageDrawable("@drawable/ic_launcher");
-			  //holder.imageViewIcon.setImageDrawable(Drawable.createFromPath(item.GetImageUrl()));
-			  //holder.imageViewIcon.setImageBitmap(item.GetImageBitmap());
-			  Picasso.with(context).load(item.GetImageUrl()).into(holder.imageViewIcon);
+			  
+			  // Tell Picasso to load the avatar into the image view
+			  Picasso.with(context).load(item.GetImageUrl()).into(holder.imageViewAvatar);
+			  
 			  return itemView;
 		  }
 	  }
@@ -241,19 +237,7 @@ public class MainActivity extends Activity {
 	    	    					URI uri = new URI(url.getProtocol(), url.getUserInfo(), url.getHost(), url.getPort(), url.getPath(), url.getQuery(), url.getRef());
 	    	    					imageUrl = uri.toURL().toString();
 	    	    					
-	    	    					// Image bitmap
-	    	    					Bitmap imageBitmap = null;
-	    	    					/*
-	    	    					try {
-	    	    						imageBitmap = BitmapFactory.decodeStream((new URL(imageUrl)).openStream());
-	    	    					} catch (Exception e) {
-		    	    					System.out.println("Error: Retrieving image threw error: " + e);
-		    	    					errorOccurred = true;
-		    	    					errorString = "Could not download image";
-	    	    					}
-	    	    					*/
-	    	    					
-	    	    					frontPageData.add(new FrontPageItemData(title, author, numComments, imageUrl, imageBitmap));
+	    	    					frontPageData.add(new FrontPageItemData(title, author, numComments, imageUrl));
 	    	    				} catch (Exception e) {
 	    	    					System.out.println("Error: Selecting threw error: " + e);
 	    	    					errorOccurred = true;
@@ -269,7 +253,7 @@ public class MainActivity extends Activity {
 	    		}
 	    		
 	    		if (errorOccurred) {
-	    			frontPageData.add(new FrontPageItemData("Error!", errorString, -1, "", null));
+	    			frontPageData.add(new FrontPageItemData("Error!", errorString, -1, ""));
 	    		}
 	    		
 	    		/*
