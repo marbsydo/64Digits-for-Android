@@ -78,11 +78,9 @@ public class MainActivity extends Activity {
 	    	    
 	    		try {
 	    			Document doc = Jsoup.connect("http://www.64digits.com").timeout(3000).get();
-	    			String title = doc.title();
-	    			list.add(title);
-	    			Elements descElements = doc.select("div.fntgrey");
-	    			for (Element desc : descElements) {
-	    				list.add(desc.toString());
+	    			Elements divs = doc.select("div.middlecontent div.fnt11.fntgrey");
+	    			for (Element div : divs) {
+	    				list.add(div.text());
 	    			}
 	    		} catch (IOException e) {
 	    			e.printStackTrace();
