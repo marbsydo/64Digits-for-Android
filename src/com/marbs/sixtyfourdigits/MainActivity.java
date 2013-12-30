@@ -1,6 +1,7 @@
 package com.marbs.sixtyfourdigits;
 
 import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -15,12 +16,16 @@ import org.jsoup.select.Elements;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -33,16 +38,18 @@ public class MainActivity extends Activity {
 	
 	// Data for each item on the front page
 	public class FrontPageItemData {
-		//String image;
+		String imageUrl;
+		Bitmap imageBitmap;
 		String title;
 		String excerpt;
 		String author;
 		int numComments;
 		
-		public FrontPageItemData(String title, String author, int numComments) {
+		public FrontPageItemData(String title, String author, int numComments, String imageUrl, Bitmap imageBitmap) {
 			this.title = title;
 			this.author = author;
 			this.numComments = numComments;
+			this.imageUrl = imageUrl;
 		}
 		
 		public String GetTitle() {
@@ -55,6 +62,14 @@ public class MainActivity extends Activity {
 		
 		public int GetNumComments() {
 			return numComments;
+		}
+		
+		public String GetImageUrl() {
+			return imageUrl;
+		}
+		
+		public Bitmap GetImageBitmap() {
+			return imageBitmap;
 		}
 	}
 	
@@ -71,6 +86,7 @@ public class MainActivity extends Activity {
 		  private static class ViewHolder {
 			  private TextView textViewTitle;
 			  private TextView textViewAuthor;
+			  private ImageView imageViewIcon;
 			  
 			  public ViewHolder() {
 				  // Do nothing
@@ -97,6 +113,7 @@ public class MainActivity extends Activity {
 				  
 				  holder.textViewTitle = (TextView)itemView.findViewById(R.id.textTitle);
 				  holder.textViewAuthor = (TextView)itemView.findViewById(R.id.textAuthor);
+				  holder.imageViewIcon = (ImageView)itemView.findViewById(R.id.icon);
 				  
 				  itemView.setTag(holder);
 			  } else {
@@ -105,8 +122,10 @@ public class MainActivity extends Activity {
 
 			  holder.textViewTitle.setText(item.GetTitle());
 			  int num = item.GetNumComments();
-			  holder.textViewAuthor.setText("(" + num + " comment" + (num == 1 ? "" : "s") + ") " + item.GetAuthor());
-			  
+			  holder.textViewAuthor.setText(item.GetAuthor() + " (" + num + " comment" + (num == 1 ? "" : "s") + ")");
+			  //holder.imageViewIcon.setImageDrawable("@drawable/ic_launcher");
+			  //holder.imageViewIcon.setImageDrawable(Drawable.createFromPath(item.GetImageUrl()));
+			  holder.imageViewIcon.setImageBitmap(item.GetImageBitmap());
 			  return itemView;
 		  }
 	  }
@@ -197,8 +216,13 @@ public class MainActivity extends Activity {
 	    	    			Elements frontPageBlogs = doc.select("div.middlecontent div.fnt11.fntgrey");
 	    	    			for (Element blog : frontPageBlogs) {
 	    	    				try {
+	    	    					// Title
 	    	    					String title = blog.select("a.lnknodec.fntblue.fntbold.fnt15").first().text();
+	    	    					
+	    	    					// Author
 	    	    					String author = blog.select("a.fntblue").get(1).text();
+	    	    					
+	    	    					// Number of comments
 	    	    					String numCommentsString = blog.select("a.fntblue").get(2).text();
 	    	    					int numComments = -1;
 	    	    					Pattern p = Pattern.compile("\\d+");
@@ -206,7 +230,21 @@ public class MainActivity extends Activity {
 	    	    					if (m.find()) {
 	    	    						numComments = Integer.parseInt(m.group());
 	    	    					}
-	    	    					frontPageData.add(new FrontPageItemData(title, author, numComments));
+	    	    					
+	    	    					// Image URL
+	    	    					String imageUrl = blog.select("img").first().absUrl("src");
+	    	    					
+	    	    					// Image bitmap
+	    	    					Bitmap imageBitmap = null;
+	    	    					try {
+	    	    						imageBitmap = BitmapFactory.decodeStream((new URL(imageUrl)).openStream());
+	    	    					} catch (Exception e) {
+		    	    					System.out.println("Error: Retrieving image threw error: " + e);
+		    	    					errorOccurred = true;
+		    	    					errorString = "Could not download image";
+	    	    					}
+	    	    					
+	    	    					frontPageData.add(new FrontPageItemData(title, author, numComments, imageUrl, imageBitmap));
 	    	    				} catch (Exception e) {
 	    	    					System.out.println("Error: Selecting threw error: " + e);
 	    	    					errorOccurred = true;
@@ -222,7 +260,7 @@ public class MainActivity extends Activity {
 	    		}
 	    		
 	    		if (errorOccurred) {
-	    			frontPageData.add(new FrontPageItemData("Error!", errorString, -1));
+	    			frontPageData.add(new FrontPageItemData("Error!", errorString, -1, "", null));
 	    		}
 	    		
 	    		/*
