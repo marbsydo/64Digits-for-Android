@@ -35,6 +35,14 @@ public class MainActivity extends Activity {
 
 	    HashMap<String, Integer> mIdMap = new HashMap<String, Integer>();
 
+	    public StableArrayAdapter(Context context, int textViewResourceId, int asdf,
+		        List<String> objects) {
+		      super(context, textViewResourceId, asdf, objects);
+		      for (int i = 0; i < objects.size(); ++i) {
+		        mIdMap.put(objects.get(i), i);
+		      }
+		    }
+	    /*
 	    public StableArrayAdapter(Context context, int textViewResourceId,
 	        List<String> objects) {
 	      super(context, textViewResourceId, objects);
@@ -42,6 +50,7 @@ public class MainActivity extends Activity {
 	        mIdMap.put(objects.get(i), i);
 	      }
 	    }
+	    */
 
 	    @Override
 	    public long getItemId(int position) {
@@ -58,7 +67,8 @@ public class MainActivity extends Activity {
 
 	    private class FrontPage extends AsyncTask<Void, Void, Void> {
 	    	
-	    	ArrayList<String> list;
+	    	ArrayList<String> authors;
+	    	ArrayList<String> blogPreviews;
 	    	
 	    	@Override
 	    	protected void onPreExecute() {
@@ -74,13 +84,20 @@ public class MainActivity extends Activity {
 	    	protected Void doInBackground(Void... params) {
 	    	    
 	    	    
-	    	    list = new ArrayList<String>();
+	    	    authors = new ArrayList<String>();
+	    	    blogPreviews = new ArrayList<String>();
 	    	    
 	    		try {
 	    			Document doc = Jsoup.connect("http://www.64digits.com").timeout(3000).get();
-	    			Elements divs = doc.select("div.middlecontent div.fnt11.fntgrey");
-	    			for (Element div : divs) {
-	    				list.add(div.text());
+	    			Elements frontPageBlogs = doc.select("div.middlecontent div.fnt11.fntgrey");
+	    			for (Element blog : frontPageBlogs) {
+	    				// Read author
+	    				Element author = blog.select("div.fnt10.floatright").first();
+	    				authors.add(author.text());
+	    				
+	    				// Read blog preview
+	    				Element blogPreview = blog.select("div.fnt12.fntgrey").first();
+	    				blogPreviews.add(blogPreview.text());
 	    			}
 	    		} catch (IOException e) {
 	    			e.printStackTrace();
@@ -124,9 +141,13 @@ public class MainActivity extends Activity {
 	    		editText.setText(desc);
 	    		*/
 	    		final ListView listview = (ListView) findViewById(R.id.listview);
+	    	    //final StableArrayAdapter adapter = new StableArrayAdapter(context,
+	    	    //		android.R.layout.simple_list_item_1, list);
 	    	    final StableArrayAdapter adapter = new StableArrayAdapter(context,
-	    	    		android.R.layout.simple_list_item_1, list);
+	    	    		R.layout.frontpage_item, R.id.secondLine, authors);
 	    	    listview.setAdapter(adapter);
+	    	    
+	    	    //listview.setAdapter(new StableArrayAdapter(context, R.layout.frontpage_item, R.id.firstLine, blogPreviews));
 	    	    
 	    	    pd.dismiss();
 	    	}
