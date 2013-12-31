@@ -5,6 +5,7 @@ import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -17,6 +18,7 @@ import org.jsoup.select.Elements;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
@@ -95,7 +97,7 @@ public class MainActivity extends ActionBarActivity {
 
 	public void addFrontPageItemError(String errorMessage) {
 		addFrontPageItem(new FrontPageItemData(FrontPageItemData.Type.ERROR,
-				"Error!", errorMessage, -1, ""));
+				"Error!", errorMessage, -1, "", -1));
 	}
 
 	public void addFrontPageItemNext() {
@@ -148,6 +150,7 @@ public class MainActivity extends ActionBarActivity {
 				} else if (frontPageData.get(position).IsNormal()) {
 					// Go to the blog it points to
 					Intent intentBlog = new Intent(getApplicationContext(), BlogActivity.class);
+					intentBlog.putExtra("blogId", frontPageData.get(position).GetBlogId());
 					startActivity(intentBlog);
 				}
 			}
@@ -172,6 +175,7 @@ public class MainActivity extends ActionBarActivity {
 		String excerpt;
 		String author;
 		int numComments;
+		int blogId;
 
 		public FrontPageItemData(Type type, int page) {
 			this.type = type;
@@ -179,24 +183,27 @@ public class MainActivity extends ActionBarActivity {
 			this.author = "";
 			this.numComments = page;
 			this.imageUrl = "";
+			this.blogId = -1;
 		}
 
 		public FrontPageItemData(Type type, String title, String author,
-				int numComments, String imageUrl) {
+				int numComments, String imageUrl, int blogId) {
 			this.type = type;
 			this.title = title;
 			this.author = author;
 			this.numComments = numComments;
 			this.imageUrl = imageUrl;
+			this.blogId = blogId;
 		}
 
 		public FrontPageItemData(String title, String author, int numComments,
-				String imageUrl) {
+				String imageUrl, int blogId) {
 			this.type = Type.NORMAL;
 			this.title = title;
 			this.author = author;
 			this.numComments = numComments;
 			this.imageUrl = imageUrl;
+			this.blogId = blogId;
 		}
 
 		public String GetTitle() {
@@ -213,6 +220,10 @@ public class MainActivity extends ActionBarActivity {
 
 		public String GetImageUrl() {
 			return imageUrl;
+		}
+		
+		public int GetBlogId() {
+			return blogId;
 		}
 
 		public boolean IsNormal() {
@@ -424,9 +435,21 @@ public class MainActivity extends ActionBarActivity {
 										url.getPort(), url.getPath(),
 										url.getQuery(), url.getRef());
 								imageUrl = uri.toURL().toString();
+								
+								// BlogId
+								String blogUrl = blog.select("a").get(2).absUrl("href");
+								int blogId = -1;
+								try {
+									Uri blogUri = Uri.parse(blogUrl);
+									blogId = Integer.parseInt(blogUri.getQueryParameter("id"));
+								} catch (Exception e) {
+									System.out.println("Error: Could not parse blog ID");
+									errorOccurred = true;
+									errorString = "Could not parse blog ID";
+								}
 
 								frontPageData.add(new FrontPageItemData(title,
-										author, numComments, imageUrl));
+										author, numComments, imageUrl, blogId));
 							} catch (Exception e) {
 								System.out
 										.println("Error: Selecting threw error: "
