@@ -29,6 +29,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
@@ -67,6 +68,16 @@ public class MainActivity extends Activity {
 	            return super.onOptionsItemSelected(item);
 	    }
 	}
+	
+	//TODO: This function currently causes the app to crash because it's not supported under the min sdk
+	/*
+	public void showMenuPopup(View v) {
+	    PopupMenu popup = new PopupMenu(this, v);
+	    MenuInflater inflater = popup.getMenuInflater();
+	    inflater.inflate(R.menu.main_activity_popup, popup.getMenu());
+	    popup.show();
+	}
+	*/
 	
 	public void refreshFrontPage() {
 		resetFrontPage();
