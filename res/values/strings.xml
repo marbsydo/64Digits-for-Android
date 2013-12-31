@@ -6,5 +6,9 @@
     <string name="action_refresh">Refresh</string>
     <string name="action_menu">Menu</string>
     <string name="action_login">Log in</string>
+    <string name="action_register">Register</string>
+    <string name="action_rules">Rules</string>
+    <string name="action_faq">FAQ</string>
+    <string name="action_tos">Terms of Service</string>
 
 </resources>

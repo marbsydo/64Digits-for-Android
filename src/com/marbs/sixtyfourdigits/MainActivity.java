@@ -18,8 +18,8 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.widget.PopupMenu;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -65,20 +65,25 @@ public class MainActivity extends ActionBarActivity {
 	        case R.id.action_refresh:
 	            refreshFrontPage();
 	            return true;
+	        /*
+	        case R.id.action_menu:
+	            showMenuPopup(item.getActionView());
+	        	return true;
+	        */
 	        default:
 	            return super.onOptionsItemSelected(item);
 	    }
 	}
 	
 	//TODO: This function currently causes the app to crash because it's not supported under the min sdk
-	/*
-	public void showMenuPopup(View v) {
-	    PopupMenu popup = new PopupMenu(this, v);
+	//public void showMenuPopup(View v) {
+	public boolean showMenuPopup(MenuItem item) {
+	    PopupMenu popup = new PopupMenu(this, findViewById(R.id.action_menu));
 	    MenuInflater inflater = popup.getMenuInflater();
 	    inflater.inflate(R.menu.main_activity_popup, popup.getMenu());
 	    popup.show();
+	    return true;
 	}
-	*/
 	
 	public void refreshFrontPage() {
 		resetFrontPage();
