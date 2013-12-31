@@ -14,11 +14,12 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBarActivity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -29,12 +30,12 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.PopupMenu;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
+//import android.view.MenuItem;
 
-public class MainActivity extends Activity {
+public class MainActivity extends ActionBarActivity {
 
 	ArrayList<FrontPageItemData> frontPageData;
 	int page;
@@ -42,7 +43,7 @@ public class MainActivity extends Activity {
 	ProgressDialog pd;
 	public Context mainActivityContext = this;
 	public MainActivity mainActivity = this;
-
+	
 	public MainActivity() {
 		super();
 		frontPageData = new ArrayList<FrontPageItemData>();
