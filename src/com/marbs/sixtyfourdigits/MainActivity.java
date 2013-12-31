@@ -22,6 +22,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -55,6 +56,28 @@ public class MainActivity extends Activity {
 	    return super.onCreateOptionsMenu(menu);
 	}
 	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+	    // Handle presses on the action bar items
+	    switch (item.getItemId()) {
+	        case R.id.action_refresh:
+	            refreshFrontPage();
+	            return true;
+	        default:
+	            return super.onOptionsItemSelected(item);
+	    }
+	}
+	
+	public void refreshFrontPage() {
+		resetFrontPage();
+		page = 0;
+		scrollToAfterRegenerate = -1;
+		new FrontPage(page).execute();
+	}
+	
+	public void resetFrontPage() {
+		frontPageData.clear();
+	}
 	
 	public void addFrontPageItem(FrontPageItemData frontPageItem) {
 		frontPageData.add(frontPageItem);
@@ -194,7 +217,7 @@ public class MainActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 
-		new FrontPage(page).execute();
+		refreshFrontPage();
 	}
 
 	private class FrontPageItemAdapter extends ArrayAdapter<FrontPageItemData> {
