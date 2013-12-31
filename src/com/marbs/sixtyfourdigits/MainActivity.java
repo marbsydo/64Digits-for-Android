@@ -17,8 +17,10 @@ import org.jsoup.select.Elements;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.graphics.Point;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,6 +36,7 @@ public class MainActivity extends Activity {
 
 	ArrayList<FrontPageItemData> frontPageData;
 	int page;
+	int scrollToAfterRegenerate = -1;
 	ProgressDialog pd;
 	public Context mainActivityContext = this;
 	public MainActivity mainActivity = this;
@@ -75,7 +78,18 @@ public class MainActivity extends Activity {
 			public void onItemClick(AdapterView<?> parent, final View view, int position, long id) {
 				if (frontPageData.get(position).IsNext()) {
 					// Clicked the next button (which is always at the bottom)
+
+					// Work out what position we should scroll to when the list has been regenerated
+					// This is done because when the list is regenerated, the view scroll back to the top
+					// TODO: It might be possible to avoid this messy solution by regenerating the list
+					// in a neater way that doesn't have the side effect of shifting the view
+					int visibleChildCount = (listview.getLastVisiblePosition() - listview.getFirstVisiblePosition()) - 1;
+					scrollToAfterRegenerate = position - visibleChildCount;
+					
+					// Remove the last item, which is this button that was just pressed
 					removeLastFrontPageItem();
+					
+					// Create a divider and load the next page
 					page++;
 					addFrontPageItemDivider(page);
 					new FrontPage(page).execute();
@@ -83,6 +97,11 @@ public class MainActivity extends Activity {
 				}
 			}
 		});
+		
+		// Scroll to the target position
+		if (scrollToAfterRegenerate >= 0) {
+			listview.setSelection(scrollToAfterRegenerate);
+		}
 	}
 	
 	// Data for each item on the front page
