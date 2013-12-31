@@ -32,6 +32,7 @@ import com.squareup.picasso.Picasso;
 public class MainActivity extends Activity {
 
 	ArrayList<FrontPageItemData> frontPageData;
+	int page;
 	ProgressDialog pd;
 	public Context mainActivityContext = this;
 	public MainActivity mainActivity = this;
@@ -39,10 +40,19 @@ public class MainActivity extends Activity {
 	public MainActivity() {
 		super();
 		frontPageData = new ArrayList<FrontPageItemData>();
+		page = 0;
 	}
 	
 	public void addFrontPageItem(FrontPageItemData frontPageItem) {
 		frontPageData.add(frontPageItem);
+	}
+	
+	public void addFrontPageItemError(String errorMessage) {
+		addFrontPageItem(new FrontPageItemData(FrontPageItemData.Type.ERROR, "Error!", errorMessage, -1, ""));
+	}
+	
+	public void addFrontPageItemNext() {
+		addFrontPageItem(new FrontPageItemData(FrontPageItemData.Type.NEXT));
 	}
 	
 	public void regenerateFrontPage() {
@@ -53,15 +63,41 @@ public class MainActivity extends Activity {
 	}
 	
 	// Data for each item on the front page
-	public class FrontPageItemData {
+	public static class FrontPageItemData {
+		
+		private static enum Type {
+			NORMAL,
+			ERROR,
+			NEXT;
+		}
+		
+		Type type;
 		String imageUrl;
 		String title;
 		String excerpt;
 		String author;
 		int numComments;
 
+		public FrontPageItemData(Type type) {
+			this.type = type;
+			this.title = "";
+			this.author = "";
+			this.numComments = -1;
+			this.imageUrl = "";
+		}
+		
+		public FrontPageItemData(Type type, String title,
+				String author, int numComments, String imageUrl) {
+			this.type = type;
+			this.title = title;
+			this.author = author;
+			this.numComments = numComments;
+			this.imageUrl = imageUrl;
+		}
+		
 		public FrontPageItemData(String title, String author, int numComments,
 				String imageUrl) {
+			this.type = Type.NORMAL;
 			this.title = title;
 			this.author = author;
 			this.numComments = numComments;
@@ -83,6 +119,18 @@ public class MainActivity extends Activity {
 		public String GetImageUrl() {
 			return imageUrl;
 		}
+		
+		public boolean IsNormal() {
+			return type == Type.NORMAL;
+		}
+		
+		public boolean IsNext() {
+			return type == Type.NEXT;
+		}
+		
+		public boolean IsError() {
+			return type == Type.ERROR;
+		}
 	}
 
 	@Override
@@ -90,7 +138,7 @@ public class MainActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 
-		new FrontPage(0).execute();
+		new FrontPage(page).execute();
 	}
 
 	private class FrontPageItemAdapter extends ArrayAdapter<FrontPageItemData> {
@@ -138,17 +186,32 @@ public class MainActivity extends Activity {
 				holder = (ViewHolder) itemView.getTag();
 			}
 
-			// Set the title text
-			holder.textViewTitle.setText(item.GetTitle());
+			if (item.IsNormal()) {
+				// Set the title text
+				holder.textViewTitle.setText(item.GetTitle());
+				
+				// Set the author and number of comments text
+				int num = item.GetNumComments();
+				holder.textViewAuthor.setText(item.GetAuthor() + " (" + num
+						+ " comment" + (num == 1 ? "" : "s") + ")");
 
-			// Set the author and number of comments text
-			int num = item.GetNumComments();
-			holder.textViewAuthor.setText(item.GetAuthor() + " (" + num
-					+ " comment" + (num == 1 ? "" : "s") + ")");
-
-			// Tell Picasso to load the avatar into the image view
-			Picasso.with(mainActivityContext).load(item.GetImageUrl())
-					.into(holder.imageViewAvatar);
+				// Tell Picasso to load the avatar into the image view
+				if (item.GetImageUrl().length() > 0) {
+					holder.imageViewAvatar.setImageResource(android.R.color.white);
+					Picasso.with(mainActivityContext).load(item.GetImageUrl())
+							.into(holder.imageViewAvatar);
+				}
+			} else if (item.IsNext()) {
+				// Set the title text
+				holder.textViewTitle.setText("");
+				holder.textViewAuthor.setText("Load next page...");
+				holder.imageViewAvatar.setImageResource(android.R.color.transparent);
+			} else if (item.IsError()) {
+				// Set the error title and message
+				holder.textViewTitle.setText(item.GetTitle());
+				holder.textViewAuthor.setText(item.GetAuthor());
+				holder.imageViewAvatar.setImageResource(android.R.color.transparent);
+			}
 
 			return itemView;
 		}
@@ -270,8 +333,7 @@ public class MainActivity extends Activity {
 			}
 
 			if (errorOccurred) {
-				frontPageData.add(new FrontPageItemData("Error!", errorString,
-						-1, ""));
+				mainActivity.addFrontPageItemError(errorString);
 			}
 
 			return null;
@@ -283,15 +345,10 @@ public class MainActivity extends Activity {
 			for (int i = 0; i < frontPageData.size(); ++i) {
 				mainActivity.addFrontPageItem(frontPageData.get(i));
 			}
+			mainActivity.addFrontPageItemNext();
 			mainActivity.regenerateFrontPage();
 
 			pd.dismiss();
-			
-			// Load first 3 pages
-			this.page++;
-			if (this.page < 3) {
-				new FrontPage(this.page).execute();
-			}
 		}
 	}
 }
