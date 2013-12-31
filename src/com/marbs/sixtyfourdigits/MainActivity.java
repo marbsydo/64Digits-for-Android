@@ -33,7 +33,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
-//import android.view.MenuItem;
 
 public class MainActivity extends ActionBarActivity {
 
@@ -43,126 +42,125 @@ public class MainActivity extends ActionBarActivity {
 	ProgressDialog pd;
 	public Context mainActivityContext = this;
 	public MainActivity mainActivity = this;
-	
+
 	public MainActivity() {
 		super();
 		frontPageData = new ArrayList<FrontPageItemData>();
 		page = 0;
 	}
-	
+
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-	    // Inflate the menu items for use in the action bar
-	    MenuInflater inflater = getMenuInflater();
-	    inflater.inflate(R.menu.main_activity_actions, menu);
-	    return super.onCreateOptionsMenu(menu);
+		// Inflate the menu items for use in the action bar
+		MenuInflater inflater = getMenuInflater();
+		inflater.inflate(R.menu.main_activity_actions, menu);
+		return super.onCreateOptionsMenu(menu);
 	}
-	
+
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-	    // Handle presses on the action bar items
-	    switch (item.getItemId()) {
-	        case R.id.action_refresh:
-	            refreshFrontPage();
-	            return true;
-	        /*
-	        case R.id.action_menu:
-	            showMenuPopup(item.getActionView());
-	        	return true;
-	        */
-	        default:
-	            return super.onOptionsItemSelected(item);
-	    }
+		// Handle presses on the action bar items
+		switch (item.getItemId()) {
+		case R.id.action_refresh:
+			refreshFrontPage();
+			return true;
+		default:
+			return super.onOptionsItemSelected(item);
+		}
 	}
-	
-	//TODO: This function currently causes the app to crash because it's not supported under the min sdk
-	//public void showMenuPopup(View v) {
+
 	public boolean showMenuPopup(MenuItem item) {
-	    PopupMenu popup = new PopupMenu(this, findViewById(R.id.action_menu));
-	    MenuInflater inflater = popup.getMenuInflater();
-	    inflater.inflate(R.menu.main_activity_popup, popup.getMenu());
-	    popup.show();
-	    return true;
+		PopupMenu popup = new PopupMenu(this, findViewById(R.id.action_menu));
+		MenuInflater inflater = popup.getMenuInflater();
+		inflater.inflate(R.menu.main_activity_popup, popup.getMenu());
+		popup.show();
+		return true;
 	}
-	
+
 	public void refreshFrontPage() {
 		resetFrontPage();
 		page = 0;
 		scrollToAfterRegenerate = -1;
 		new FrontPage(page).execute();
 	}
-	
+
 	public void resetFrontPage() {
 		frontPageData.clear();
 	}
-	
+
 	public void addFrontPageItem(FrontPageItemData frontPageItem) {
 		frontPageData.add(frontPageItem);
 	}
-	
+
 	public void addFrontPageItemError(String errorMessage) {
-		addFrontPageItem(new FrontPageItemData(FrontPageItemData.Type.ERROR, "Error!", errorMessage, -1, ""));
+		addFrontPageItem(new FrontPageItemData(FrontPageItemData.Type.ERROR,
+				"Error!", errorMessage, -1, ""));
 	}
-	
+
 	public void addFrontPageItemNext() {
 		addFrontPageItem(new FrontPageItemData(FrontPageItemData.Type.NEXT, -1));
 	}
-	
+
 	public void addFrontPageItemDivider(int page) {
-		addFrontPageItem(new FrontPageItemData(FrontPageItemData.Type.DIVIDER, page));
+		addFrontPageItem(new FrontPageItemData(FrontPageItemData.Type.DIVIDER,
+				page));
 	}
-	
+
 	public void removeLastFrontPageItem() {
 		frontPageData.remove(frontPageData.size() - 1);
 	}
-	
+
 	public void regenerateFrontPage() {
 		final ListView listview = (ListView) findViewById(R.id.listview);
-		final FrontPageItemAdapter adapter = new FrontPageItemAdapter(
-				this, R.layout.frontpage_item, frontPageData);
+		final FrontPageItemAdapter adapter = new FrontPageItemAdapter(this,
+				R.layout.frontpage_item, frontPageData);
 		listview.setAdapter(adapter);
-		
+
 		listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 			@Override
-			public void onItemClick(AdapterView<?> parent, final View view, int position, long id) {
+			public void onItemClick(AdapterView<?> parent, final View view,
+					int position, long id) {
 				if (frontPageData.get(position).IsNext()) {
 					// Clicked the next button (which is always at the bottom)
 
-					// Work out what position we should scroll to when the list has been regenerated
-					// This is done because when the list is regenerated, the view scroll back to the top
-					// TODO: It might be possible to avoid this messy solution by regenerating the list
-					// in a neater way that doesn't have the side effect of shifting the view
-					int visibleChildCount = (listview.getLastVisiblePosition() - listview.getFirstVisiblePosition()) - 1;
+					// Work out what position we should scroll to when the list
+					// has been regenerated
+					// This is done because when the list is regenerated, the
+					// view scroll back to the top
+					// TODO: It might be possible to avoid this messy solution
+					// by regenerating the list
+					// in a neater way that doesn't have the side effect of
+					// shifting the view
+					int visibleChildCount = (listview.getLastVisiblePosition() - listview
+							.getFirstVisiblePosition()) - 1;
 					scrollToAfterRegenerate = position - visibleChildCount;
-					
-					// Remove the last item, which is this button that was just pressed
+
+					// Remove the last item, which is this button that was just
+					// pressed
 					removeLastFrontPageItem();
-					
+
 					// Create a divider and load the next page
 					page++;
 					addFrontPageItemDivider(page);
 					new FrontPage(page).execute();
-					
+
 				}
 			}
 		});
-		
+
 		// Scroll to the target position
 		if (scrollToAfterRegenerate >= 0) {
 			listview.setSelection(scrollToAfterRegenerate);
 		}
 	}
-	
+
 	// Data for each item on the front page
 	public static class FrontPageItemData {
-		
+
 		private static enum Type {
-			NORMAL,
-			ERROR,
-			NEXT,
-			DIVIDER;
+			NORMAL, ERROR, NEXT, DIVIDER;
 		}
-		
+
 		Type type;
 		String imageUrl;
 		String title;
@@ -177,16 +175,16 @@ public class MainActivity extends ActionBarActivity {
 			this.numComments = page;
 			this.imageUrl = "";
 		}
-		
-		public FrontPageItemData(Type type, String title,
-				String author, int numComments, String imageUrl) {
+
+		public FrontPageItemData(Type type, String title, String author,
+				int numComments, String imageUrl) {
 			this.type = type;
 			this.title = title;
 			this.author = author;
 			this.numComments = numComments;
 			this.imageUrl = imageUrl;
 		}
-		
+
 		public FrontPageItemData(String title, String author, int numComments,
 				String imageUrl) {
 			this.type = Type.NORMAL;
@@ -211,19 +209,19 @@ public class MainActivity extends ActionBarActivity {
 		public String GetImageUrl() {
 			return imageUrl;
 		}
-		
+
 		public boolean IsNormal() {
 			return type == Type.NORMAL;
 		}
-		
+
 		public boolean IsNext() {
 			return type == Type.NEXT;
 		}
-		
+
 		public boolean IsDivider() {
 			return type == Type.DIVIDER;
 		}
-		
+
 		public boolean IsError() {
 			return type == Type.ERROR;
 		}
@@ -285,7 +283,7 @@ public class MainActivity extends ActionBarActivity {
 			if (item.IsNormal()) {
 				// Set the title text
 				holder.textViewTitle.setText(item.GetTitle());
-				
+
 				// Set the author and number of comments text
 				int num = item.GetNumComments();
 				holder.textViewAuthor.setText(item.GetAuthor() + " (" + num
@@ -293,7 +291,8 @@ public class MainActivity extends ActionBarActivity {
 
 				// Tell Picasso to load the avatar into the image view
 				if (item.GetImageUrl().length() > 0) {
-					holder.imageViewAvatar.setImageResource(android.R.color.white);
+					holder.imageViewAvatar
+							.setImageResource(android.R.color.white);
 					Picasso.with(mainActivityContext).load(item.GetImageUrl())
 							.into(holder.imageViewAvatar);
 				}
@@ -301,17 +300,24 @@ public class MainActivity extends ActionBarActivity {
 				// Set the title text
 				holder.textViewTitle.setText("");
 				holder.textViewAuthor.setText("Load next page...");
-				holder.imageViewAvatar.setImageResource(android.R.color.transparent);
+				holder.imageViewAvatar
+						.setImageResource(android.R.color.transparent);
 			} else if (item.IsDivider()) {
 				// Set the title text
 				holder.textViewTitle.setText("");
-				holder.textViewAuthor.setText("Page #" + item.GetNumComments()); // Page is stored in numComments
-				holder.imageViewAvatar.setImageResource(android.R.color.transparent);
+				holder.textViewAuthor.setText("Page #" + item.GetNumComments()); // Page
+																					// is
+																					// stored
+																					// in
+																					// numComments
+				holder.imageViewAvatar
+						.setImageResource(android.R.color.transparent);
 			} else if (item.IsError()) {
 				// Set the error title and message
 				holder.textViewTitle.setText(item.GetTitle());
 				holder.textViewAuthor.setText(item.GetAuthor());
-				holder.imageViewAvatar.setImageResource(android.R.color.transparent);
+				holder.imageViewAvatar
+						.setImageResource(android.R.color.transparent);
 			}
 
 			return itemView;
@@ -319,18 +325,18 @@ public class MainActivity extends ActionBarActivity {
 	}
 
 	private class FrontPage extends AsyncTask<Void, Void, Void> {
-		
+
 		ArrayList<FrontPageItemData> frontPageData;
 		int page;
-		
+
 		public FrontPage(int page) {
 			this.page = page;
 		}
-		
+
 		public String generateFrontPageUrl(int page) {
 			return "http://www.64digits.com/index.php?id=0&cmd=&page=" + page;
 		}
-		
+
 		@Override
 		protected void onPreExecute() {
 			super.onPreExecute();
@@ -442,7 +448,7 @@ public class MainActivity extends ActionBarActivity {
 
 		@Override
 		protected void onPostExecute(Void result) {
-			
+
 			for (int i = 0; i < frontPageData.size(); ++i) {
 				mainActivity.addFrontPageItem(frontPageData.get(i));
 			}
