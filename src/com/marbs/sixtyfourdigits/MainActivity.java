@@ -16,6 +16,7 @@ import org.jsoup.select.Elements;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
@@ -144,6 +145,10 @@ public class MainActivity extends ActionBarActivity {
 					addFrontPageItemDivider(page);
 					new FrontPage(page).execute();
 
+				} else if (frontPageData.get(position).IsNormal()) {
+					// Go to the blog it points to
+					Intent intentBlog = new Intent(getApplicationContext(), BlogActivity.class);
+					startActivity(intentBlog);
 				}
 			}
 		});

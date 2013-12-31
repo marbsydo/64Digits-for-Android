@@ -10,5 +10,7 @@
     <string name="action_rules">Rules</string>
     <string name="action_faq">FAQ</string>
     <string name="action_tos">Terms of Service</string>
+    <string name="title_activity_blog">BlogActivity</string>
+    <string name="hello_world">Hello world!</string>
 
 </resources>
