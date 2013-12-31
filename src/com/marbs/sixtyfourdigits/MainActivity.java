@@ -22,6 +22,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -52,7 +53,15 @@ public class MainActivity extends Activity {
 	}
 	
 	public void addFrontPageItemNext() {
-		addFrontPageItem(new FrontPageItemData(FrontPageItemData.Type.NEXT));
+		addFrontPageItem(new FrontPageItemData(FrontPageItemData.Type.NEXT, -1));
+	}
+	
+	public void addFrontPageItemDivider(int page) {
+		addFrontPageItem(new FrontPageItemData(FrontPageItemData.Type.DIVIDER, page));
+	}
+	
+	public void removeLastFrontPageItem() {
+		frontPageData.remove(frontPageData.size() - 1);
 	}
 	
 	public void regenerateFrontPage() {
@@ -60,6 +69,20 @@ public class MainActivity extends Activity {
 		final FrontPageItemAdapter adapter = new FrontPageItemAdapter(
 				this, R.layout.frontpage_item, frontPageData);
 		listview.setAdapter(adapter);
+		
+		listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+			@Override
+			public void onItemClick(AdapterView<?> parent, final View view, int position, long id) {
+				if (frontPageData.get(position).IsNext()) {
+					// Clicked the next button (which is always at the bottom)
+					removeLastFrontPageItem();
+					page++;
+					addFrontPageItemDivider(page);
+					new FrontPage(page).execute();
+					
+				}
+			}
+		});
 	}
 	
 	// Data for each item on the front page
@@ -68,7 +91,8 @@ public class MainActivity extends Activity {
 		private static enum Type {
 			NORMAL,
 			ERROR,
-			NEXT;
+			NEXT,
+			DIVIDER;
 		}
 		
 		Type type;
@@ -78,11 +102,11 @@ public class MainActivity extends Activity {
 		String author;
 		int numComments;
 
-		public FrontPageItemData(Type type) {
+		public FrontPageItemData(Type type, int page) {
 			this.type = type;
 			this.title = "";
 			this.author = "";
-			this.numComments = -1;
+			this.numComments = page;
 			this.imageUrl = "";
 		}
 		
@@ -126,6 +150,10 @@ public class MainActivity extends Activity {
 		
 		public boolean IsNext() {
 			return type == Type.NEXT;
+		}
+		
+		public boolean IsDivider() {
+			return type == Type.DIVIDER;
 		}
 		
 		public boolean IsError() {
@@ -205,6 +233,11 @@ public class MainActivity extends Activity {
 				// Set the title text
 				holder.textViewTitle.setText("");
 				holder.textViewAuthor.setText("Load next page...");
+				holder.imageViewAvatar.setImageResource(android.R.color.transparent);
+			} else if (item.IsDivider()) {
+				// Set the title text
+				holder.textViewTitle.setText("");
+				holder.textViewAuthor.setText("Page #" + item.GetNumComments()); // Page is stored in numComments
 				holder.imageViewAvatar.setImageResource(android.R.color.transparent);
 			} else if (item.IsError()) {
 				// Set the error title and message
