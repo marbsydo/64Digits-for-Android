@@ -17,11 +17,11 @@ import org.jsoup.select.Elements;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.graphics.Point;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.view.Display;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -46,6 +46,15 @@ public class MainActivity extends Activity {
 		frontPageData = new ArrayList<FrontPageItemData>();
 		page = 0;
 	}
+	
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+	    // Inflate the menu items for use in the action bar
+	    MenuInflater inflater = getMenuInflater();
+	    inflater.inflate(R.menu.main_activity_actions, menu);
+	    return super.onCreateOptionsMenu(menu);
+	}
+	
 	
 	public void addFrontPageItem(FrontPageItemData frontPageItem) {
 		frontPageData.add(frontPageItem);
