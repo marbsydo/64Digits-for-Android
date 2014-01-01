@@ -5,7 +5,6 @@ import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -31,6 +30,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -257,6 +257,7 @@ public class MainActivity extends ActionBarActivity {
 			private TextView textViewTitle;
 			private TextView textViewAuthor;
 			private ImageView imageViewAvatar;
+			private Button blogViewButton;
 
 			public ViewHolder() {
 				// Do nothing
@@ -290,6 +291,8 @@ public class MainActivity extends ActionBarActivity {
 						.findViewById(R.id.textAuthor);
 				holder.imageViewAvatar = (ImageView) itemView
 						.findViewById(R.id.imageAvatar);
+				holder.blogViewButton = (Button) itemView
+						.findViewById(R.id.buttonBlog);
 
 				itemView.setTag(holder);
 			} else {
@@ -299,11 +302,12 @@ public class MainActivity extends ActionBarActivity {
 			if (item.IsNormal()) {
 				// Set the title text
 				holder.textViewTitle.setText(item.GetTitle());
-
-				// Set the author and number of comments text
-				int num = item.GetNumComments();
-				holder.textViewAuthor.setText(item.GetAuthor() + " (" + num
-						+ " comment" + (num == 1 ? "" : "s") + ")");
+				
+				// Set the author text
+				holder.textViewAuthor.setText(item.GetAuthor());
+				
+				// Set the button text
+				holder.blogViewButton.setText(item.GetNumComments() + "");
 
 				// Tell Picasso to load the avatar into the image view
 				if (item.GetImageUrl().length() > 0) {

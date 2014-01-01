@@ -12,5 +12,9 @@
     <string name="action_tos">Terms of Service</string>
     <string name="title_activity_blog">BlogActivity</string>
     <string name="hello_world">Hello world!</string>
+    <string name="avatar_description">A user\'s avatar</string>
+    <string name="default_num_blog_comments">0</string>
+    <string name="default_blog_title">Ethereal blog</string>
+    <string name="default_blog_author">Unseen author</string>
 
 </resources>
