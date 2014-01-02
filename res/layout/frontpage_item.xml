@@ -50,38 +50,43 @@
                 android:id="@+id/textTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:maxLines="2"
                 android:text="@string/default_blog_title"
                 android:textSize="16sp"
-                android:textStyle="bold"
-                android:maxLines="2"
-                android:ellipsize="end" />
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/textAuthor"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:maxLines="1"
                 android:text="@string/default_blog_author"
                 android:textSize="12sp"
-                android:textStyle="normal"
-                android:maxLines="1"
-                android:ellipsize="end" />
+                android:textStyle="normal" />
         </LinearLayout>
 
         <!-- Comments -->
+        <!-- blockDescendants is on to stop the button from stealing the click -->
 
         <LinearLayout
             android:id="@+id/containerComments"
             android:layout_width="@dimen/frontpage_numcomments_width"
             android:layout_height="@dimen/frontpage_item_height"
             android:background="#f4f4f4"
+            android:descendantFocusability="blocksDescendants"
             android:gravity="center_vertical"
             android:orientation="horizontal" >
+
+            <!-- Clickable is false to stop the button blocking the click, which is received by the parent -->
 
             <Button
                 android:id="@+id/buttonBlog"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@drawable/ic_menu_start_conversation_blank"
+                android:clickable="false"
                 android:minWidth="@dimen/frontpage_numcomments_width"
                 android:text="@string/default_num_blog_comments"
                 android:textColor="#666666"
