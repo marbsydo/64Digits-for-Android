@@ -1,8 +1,9 @@
 # 64Digits for Android
 
-A very much work-in-progress Android app for [64Digits](http://www.64digits.com). Current feature is:
+A very much work-in-progress Android app for [64Digits](http://www.64digits.com). Current features are:
 
 * Browse the front page!
+* Browse (unformatted) blogs!
 
 # Requirements for compiling
 
