@@ -72,16 +72,6 @@ public class MainActivity extends ActionBarActivity {
 		}
 	}
 
-	/*
-	public boolean showMenuPopup(MenuItem item) {
-		PopupMenu popup = new PopupMenu(this, findViewById(R.id.action_menu));
-		MenuInflater inflater = popup.getMenuInflater();
-		inflater.inflate(R.menu.main_activity_popup, popup.getMenu());
-		popup.show();
-		return true;
-	}
-	*/
-
 	public void refreshFrontPage() {
 		resetFrontPage();
 		page = 0;
