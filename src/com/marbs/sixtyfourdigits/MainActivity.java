@@ -56,7 +56,7 @@ public class MainActivity extends ActionBarActivity {
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu items for use in the action bar
 		MenuInflater inflater = getMenuInflater();
-		inflater.inflate(R.menu.main_activity_actions, menu);
+		inflater.inflate(R.menu.main, menu);
 		return super.onCreateOptionsMenu(menu);
 	}
 
@@ -72,6 +72,7 @@ public class MainActivity extends ActionBarActivity {
 		}
 	}
 
+	/*
 	public boolean showMenuPopup(MenuItem item) {
 		PopupMenu popup = new PopupMenu(this, findViewById(R.id.action_menu));
 		MenuInflater inflater = popup.getMenuInflater();
@@ -79,6 +80,7 @@ public class MainActivity extends ActionBarActivity {
 		popup.show();
 		return true;
 	}
+	*/
 
 	public void refreshFrontPage() {
 		resetFrontPage();

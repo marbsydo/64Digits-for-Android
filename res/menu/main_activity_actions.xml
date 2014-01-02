@@ -1,10 +1,4 @@
-<menu xmlns:android="http://schemas.android.com/apk/res/android"
-	xmlns:sfd="http://schemas.android.com/apk/res-auto" >
-    <item
-        android:id="@+id/action_settings"
-        sfd:showAsAction="never"
-        android:orderInCategory="100"
-        android:title="@string/action_settings"/>
+    <!--
     <item android:id="@+id/action_menu"
           sfd:showAsAction="always"
           android:icon="@drawable/ic_menu_moreoverflow_normal_holo_light"
@@ -12,6 +6,14 @@
           android:showAsAction="ifRoom"
           android:onClick="showMenuPopup"
           />
+    -->
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:sfd="http://schemas.android.com/apk/res-auto" >
+    <item
+        android:id="@+id/action_settings"
+        sfd:showAsAction="never"
+        android:orderInCategory="100"
+        android:title="@string/action_settings"/>
     <item android:id="@+id/action_refresh"
           sfd:showAsAction="always"
           android:icon="@drawable/ic_menu_refresh"
