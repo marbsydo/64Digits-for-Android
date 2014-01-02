@@ -142,7 +142,8 @@ public class MainActivity extends ActionBarActivity {
 				} else if (frontPageData.get(position).IsNormal()) {
 					// Go to the blog it points to
 					Intent intentBlog = new Intent(getApplicationContext(), BlogActivity.class);
-					intentBlog.putExtra("blogId", frontPageData.get(position).GetBlogId());
+					intentBlog.putExtra("blogAuthor", frontPageData.get(position).GetAuthor());
+					intentBlog.putExtra("blogId", frontPageData.get(position).GetBlogId() + ""); //TODO: We have converted blogId from string to int to string. Is this silly?
 					startActivity(intentBlog);
 				}
 			}
@@ -397,6 +398,7 @@ public class MainActivity extends ActionBarActivity {
 					}
 
 					if (doc != null) {
+						//TODO: This should be in a try/catch
 						Elements frontPageBlogs = doc
 								.select("div.middlecontent div.fnt11.fntgrey");
 						for (Element blog : frontPageBlogs) {
