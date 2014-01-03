@@ -23,7 +23,8 @@ public class BlogActivity extends Activity {
 
 	public BlogActivity blogActivity = this;
 	
-	TextView blogText;
+	TextView blogTextView;
+	TextView blogTitleView;
 	ProgressDialog pd;
 	
 	@Override
@@ -33,8 +34,10 @@ public class BlogActivity extends Activity {
 		// Show the Up button in the action bar.
 		setupActionBar();
 		
-		blogText = (TextView) this.findViewById(R.id.blog_content);
-		blogText.setText("Doing stuff...");
+		blogTextView = (TextView) this.findViewById(R.id.blog_content);
+		blogTextView.setText("Doing stuff...");
+		blogTitleView = (TextView) this.findViewById(R.id.blog_title);
+		blogTitleView.setText("No title yet...");
 		
 		Bundle extras = getIntent().getExtras();
 		if (extras != null) {
@@ -43,16 +46,18 @@ public class BlogActivity extends Activity {
 			
 			(new Blog(blogAuthor, blogId)).execute();
 		} else {
-			blogText.setText("No blog author or ID supplied");
+			blogTextView.setText("No blog author or ID supplied");
 		}
 		
+		setTitle("Blog");
 	}
 	
-	public void setBlogText(final String t) {
+	public void setBlogInfo(final String blogTitle, final String blogText) {
 		runOnUiThread(new Runnable() {
 			@Override
 			public void run() {
-				blogText.setText(Html.fromHtml(t));
+				blogTextView.setText(Html.fromHtml(blogText));
+				blogTitleView.setText(blogTitle);
 			}
 		});	
 	}
@@ -90,7 +95,8 @@ public class BlogActivity extends Activity {
 			String errorString = "";
 
 			newBlogText = "This should not be shown";
-			String t = "This should never be visible";
+			String blogText = "This should never be visible";
+			String blogTitle = "No title yet";
 
 			Connection.Response response;
 			try {
@@ -141,7 +147,9 @@ public class BlogActivity extends Activity {
 							//t = doc.select("div.blog_wrapper").first().text();
 							
 							Element blogWrapper = doc.select("div.blog_wrapper").first();
-							t = blogWrapper.select("div").get(3).html();
+							blogTitle = blogWrapper.select("span").get(0).text();
+							blogText = blogWrapper.select("div").get(3).html();
+
 						} catch (Exception e) {
 							System.out.println("Error: Selecting threw error: "+ e);
 							errorOccurred = true;
@@ -157,7 +165,7 @@ public class BlogActivity extends Activity {
 			}
 
 			try {
-				blogActivity.setBlogText(t);
+				blogActivity.setBlogInfo(blogTitle, blogText);
 			} catch (Exception e) {
 				System.out.println("Error: Setting blog text threw error: "+ e);
 			}
@@ -165,7 +173,7 @@ public class BlogActivity extends Activity {
 			if (errorOccurred) {
 				newBlogText = errorString;
 			} else {
-				newBlogText = t;
+				newBlogText = blogText;
 			}
 			
 			return null;
@@ -173,7 +181,6 @@ public class BlogActivity extends Activity {
 		
 		@Override
 		protected void onPostExecute(Void result) {
-			blogActivity.setBlogText(newBlogText);
 			pd.dismiss();
 		}
 	}
