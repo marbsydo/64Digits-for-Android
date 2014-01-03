@@ -1,8 +1,8 @@
 <resources>
 
     <!-- Default screen margins, per the Android Design guidelines. -->
-    <dimen name="activity_horizontal_margin">16dp</dimen>
-    <dimen name="activity_vertical_margin">16dp</dimen>
+    <dimen name="blog_horizontal_margin">8dp</dimen>
+    <dimen name="blog_vertical_margin">0dp</dimen>
     <dimen name="frontpage_avatar_width">80dp</dimen>
     <dimen name="frontpage_avatar_height">80dp</dimen>
     <dimen name="frontpage_numcomments_width">60dp</dimen>

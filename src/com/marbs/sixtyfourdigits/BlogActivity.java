@@ -6,7 +6,6 @@ import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
@@ -15,6 +14,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
+import android.text.Html;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
@@ -52,7 +52,7 @@ public class BlogActivity extends Activity {
 		runOnUiThread(new Runnable() {
 			@Override
 			public void run() {
-				blogText.setText(t);
+				blogText.setText(Html.fromHtml(t));
 			}
 		});	
 	}
@@ -77,8 +77,8 @@ public class BlogActivity extends Activity {
 		protected void onPreExecute() {
 			super.onPreExecute();
 			pd = new ProgressDialog(BlogActivity.this);
-			pd.setTitle("Retrieve 64D Front Page");
-			pd.setMessage("Loading blog...");
+			pd.setTitle("Loading blog");
+			pd.setMessage("Fetching bits and pieces...");
 			pd.setIndeterminate(false);
 			pd.show();
 		}
@@ -137,7 +137,11 @@ public class BlogActivity extends Activity {
 							//}
 							//t = blogWrapper.text();
 							//t = blogWrapper.select("div.fnt14").first().text();
-							t = doc.select("div.blog_wrapper").first().text();
+							
+							//t = doc.select("div.blog_wrapper").first().text();
+							
+							Element blogWrapper = doc.select("div.blog_wrapper").first();
+							t = blogWrapper.select("div").get(3).html();
 						} catch (Exception e) {
 							System.out.println("Error: Selecting threw error: "+ e);
 							errorOccurred = true;
