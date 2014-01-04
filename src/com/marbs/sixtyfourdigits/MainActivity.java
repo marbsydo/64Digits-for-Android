@@ -15,6 +15,7 @@ import org.jsoup.select.Elements;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -25,6 +26,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -132,13 +134,12 @@ public class MainActivity extends ActionBarActivity {
 	}
 
 	public void addFrontPageItemDivider(int page) {
-		FrontPagePost post = (FrontPagePost) new FrontPagePostDivider("Page 3");
+		FrontPagePost post = (FrontPagePost) new FrontPagePostDivider("Page " + page);
 		frontPageFeed.addPost(post, FrontPageFeed.VIEWTYPE_DIVIDER);
 	}
 
 	public void removeLastFrontPageItem() {
-		//TODO
-		//frontPageData.remove(frontPageData.size() - 1);
+		frontPageFeed.removeLastPost();
 	}
 
 	public void regenerateFrontPage() {
@@ -154,12 +155,14 @@ public class MainActivity extends ActionBarActivity {
 		*/
 		
 		// This makes all the items clickable
-		/*
+		
 		listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> parent, final View view,
 					int position, long id) {
-				if (frontPageData.get(position).IsNext()) {
+				
+				switch (frontPageFeed.getType(position)) {
+				case FrontPageFeed.VIEWTYPE_NEXT:
 					// Clicked the next button (which is always at the bottom)
 
 					// Work out what position we should scroll to when the list
@@ -180,19 +183,22 @@ public class MainActivity extends ActionBarActivity {
 
 					// Create a divider and load the next page
 					page++;
-					addFrontPageItemDivider(page);
+					addFrontPageItemDivider(page + 1); // +1 because humans count from 1 not 0
 					new FrontPage(page).execute();
-
-				} else if (frontPageData.get(position).IsNormal()) {
+					break;
+				case FrontPageFeed.VIEWTYPE_BLOG:
 					// Go to the blog it points to
+					FrontPagePostBlog b = (FrontPagePostBlog) frontPageFeed.getPost(position);
+					
 					Intent intentBlog = new Intent(getApplicationContext(), BlogActivity.class);
-					intentBlog.putExtra("blogAuthor", frontPageData.get(position).GetAuthor());
-					intentBlog.putExtra("blogId", frontPageData.get(position).GetBlogId() + ""); //TODO: We have converted blogId from string to int to string. Is this silly?
+					intentBlog.putExtra("blogAuthor", b.getQueryUserid());
+					intentBlog.putExtra("blogId", b.getQueryId() + ""); //TODO: We have converted blogId from string to int to string. Is this silly?
 					startActivity(intentBlog);
+					break;
 				}
 			}
 		});
-		*/
+		
 
 		// Scroll to the target position
 		if (scrollToAfterRegenerate >= 0) {

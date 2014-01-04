@@ -45,6 +45,10 @@ public class FrontPageFeed {
 	public FrontPagePost getPost(int position) {
 		return this.posts.get(position).getPost();
 	}
+	
+	public void removeLastPost() {
+		this.posts.remove(this.posts.size() - 1);
+	}
 
 	public int getType(int position) {
 		return this.posts.get(position).getType();
