@@ -16,5 +16,7 @@
     <string name="default_num_blog_comments">0</string>
     <string name="default_blog_title">Ethereal blog</string>
     <string name="default_blog_author">Unseen author</string>
+    <string name="frontpage_next">Next</string>
+    <string name="frontpage_divider">Divider</string>
 
 </resources>

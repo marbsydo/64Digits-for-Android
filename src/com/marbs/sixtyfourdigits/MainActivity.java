@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -16,30 +15,32 @@ import org.jsoup.select.Elements;
 
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
-import android.support.v7.widget.PopupMenu;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.marbs.sixtyfourdigits.model.FrontPageFeed;
+import com.marbs.sixtyfourdigits.model.FrontPagePost;
+import com.marbs.sixtyfourdigits.model.FrontPagePostBlog;
 import com.squareup.picasso.Picasso;
 
 public class MainActivity extends ActionBarActivity {
 
-	ArrayList<FrontPageItemData> frontPageData;
+	LayoutInflater inflater;
+	FrontPageFeed frontPageFeed;
+	
 	int page;
 	int scrollToAfterRegenerate = -1;
 	ProgressDialog pd;
@@ -48,15 +49,15 @@ public class MainActivity extends ActionBarActivity {
 
 	public MainActivity() {
 		super();
-		frontPageData = new ArrayList<FrontPageItemData>();
+		frontPageFeed = new FrontPageFeed();
 		page = 0;
 	}
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu items for use in the action bar
-		MenuInflater inflater = getMenuInflater();
-		inflater.inflate(R.menu.main, menu);
+		MenuInflater menuInflater = getMenuInflater();
+		menuInflater.inflate(R.menu.main, menu);
 		return super.onCreateOptionsMenu(menu);
 	}
 
@@ -80,37 +81,79 @@ public class MainActivity extends ActionBarActivity {
 	}
 
 	public void resetFrontPage() {
-		frontPageData.clear();
+		//TODO
+		//frontPageData.clear();
 	}
 
-	public void addFrontPageItem(FrontPageItemData frontPageItem) {
-		frontPageData.add(frontPageItem);
+	public void addFrontPageItem(FrontPageItemData frontPageItem, int type) {
+		//FrontPagePost post;
+		
+		switch (type) {
+		case FrontPageFeed.VIEWTYPE_BLOG:
+			//TODO: Move this out
+			FrontPagePost post;
+			
+			post = (FrontPagePost) new FrontPagePostBlog(
+					frontPageItem.title,
+					"comments",
+					frontPageItem.blogId + "",
+					frontPageItem.author,
+					frontPageItem.numComments,
+					frontPageItem.imageUrl);
+			
+			//TODO: Move this out
+			frontPageFeed.addPost(post, type);
+			break;
+		case FrontPageFeed.VIEWTYPE_NEWS:
+			//TODO
+			break;
+		case FrontPageFeed.VIEWTYPE_RECENT:
+			//TODO
+			break;
+		default:
+			//TODO
+			break;
+		}
+		
+		// frontPageFeed.addPost(post, type);
 	}
 
 	public void addFrontPageItemError(String errorMessage) {
-		addFrontPageItem(new FrontPageItemData(FrontPageItemData.Type.ERROR,
-				"Error!", errorMessage, -1, "", -1));
+		//TODO
+		//addFrontPageItem(new FrontPageItemData(FrontPageItemData.Type.ERROR,
+		//		"Error!", errorMessage, -1, "", -1));
 	}
 
 	public void addFrontPageItemNext() {
-		addFrontPageItem(new FrontPageItemData(FrontPageItemData.Type.NEXT, -1));
+		//TODO
+		//addFrontPageItem(new FrontPageItemData(FrontPageItemData.Type.NEXT, -1));
 	}
 
 	public void addFrontPageItemDivider(int page) {
-		addFrontPageItem(new FrontPageItemData(FrontPageItemData.Type.DIVIDER,
-				page));
+		//TODO
+		//addFrontPageItem(new FrontPageItemData(FrontPageItemData.Type.DIVIDER,
+		//		page));
 	}
 
 	public void removeLastFrontPageItem() {
-		frontPageData.remove(frontPageData.size() - 1);
+		//TODO
+		//frontPageData.remove(frontPageData.size() - 1);
 	}
 
 	public void regenerateFrontPage() {
+		
 		final ListView listview = (ListView) findViewById(R.id.listview);
+		
+		final FrontPageAdapter adapater = new FrontPageAdapter();
+		listview.setAdapter(adapater);
+		/*
 		final FrontPageItemAdapter adapter = new FrontPageItemAdapter(this,
 				R.layout.frontpage_item, frontPageData);
 		listview.setAdapter(adapter);
-
+		*/
+		
+		// This makes all the items clickable
+		/*
 		listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> parent, final View view,
@@ -148,11 +191,13 @@ public class MainActivity extends ActionBarActivity {
 				}
 			}
 		});
+		*/
 
 		// Scroll to the target position
 		if (scrollToAfterRegenerate >= 0) {
 			listview.setSelection(scrollToAfterRegenerate);
 		}
+		
 	}
 
 	// Data for each item on the front page
@@ -244,6 +289,7 @@ public class MainActivity extends ActionBarActivity {
 		refreshFrontPage();
 	}
 
+	/*
 	private class FrontPageItemAdapter extends ArrayAdapter<FrontPageItemData> {
 
 		private class ViewHolder {
@@ -336,7 +382,122 @@ public class MainActivity extends ActionBarActivity {
 			return itemView;
 		}
 	}
+	*/
+	
+	class FrontPageAdapter extends BaseAdapter {
+		
+		public FrontPageAdapter() {
+			inflater = LayoutInflater.from(MainActivity.this);
+		}
+		
+		@Override
+		public int getCount() {
+			return frontPageFeed.size();
+		}
+		
+		@Override
+		public FrontPagePost getItem(int position) {
+			return frontPageFeed.getPost(position);
+		}
+		
+		public int getType(int position) {
+			return frontPageFeed.getType(position);
+		}
+		
+		@Override
+		public long getItemId(int position) {
+			//TODO: Is this needed?
+			return 0;
+		}
+		
+		@Override
+		public int getItemViewType(int position) {
+			return frontPageFeed.getType(position);
+		}
+		
+		@Override
+		public int getViewTypeCount() {
+			// Three types: blog, news, recent
+			return FrontPageFeed.VIEWTYPE_NUM;
+		}
+		
+		public class ViewHolder {
+			private TextView textViewTitle;
+			private TextView textViewAuthor;
+			private ImageView imageViewAvatar;
+			private Button buttonBlog;
+		}
+		
+		@Override
+		public View getView(final int position, View convertView, ViewGroup parent) {
+			View itemView = convertView;
+			ViewHolder holder = null;
+			
+			// Get data about the current item
+			final FrontPagePost item = getItem(position);
+			final int type = getType(position);
+			
+			if (null == itemView) {
+				itemView = inflater.inflate(R.layout.frontpage_item,
+						parent, false);
 
+				holder = new ViewHolder();
+
+				holder.textViewTitle = (TextView) itemView
+						.findViewById(R.id.textTitle);
+				holder.textViewAuthor = (TextView) itemView
+						.findViewById(R.id.textAuthor);
+				holder.imageViewAvatar = (ImageView) itemView
+						.findViewById(R.id.imageAvatar);
+				holder.buttonBlog = (Button) itemView
+						.findViewById(R.id.buttonBlog);
+
+				itemView.setTag(holder);
+			} else {
+				holder = (ViewHolder) itemView.getTag();
+			}
+
+			if (type == FrontPageFeed.VIEWTYPE_BLOG) {
+				
+				FrontPagePostBlog itemBlog = (FrontPagePostBlog) item;
+				
+				// Set the title text
+				holder.textViewTitle.setText(itemBlog.getTitle());
+				
+				// Set the author text
+				holder.textViewAuthor.setText(itemBlog.getQueryUserid());
+				
+				// Set the button text
+				holder.buttonBlog.setText(itemBlog.getNumComments() + "");
+
+				// Tell Picasso to load the avatar into the image view
+				if (itemBlog.getImageUrl().length() > 0) {
+					holder.imageViewAvatar
+							.setImageResource(android.R.color.white);
+					Picasso.with(mainActivityContext).load(itemBlog.getImageUrl())
+							.into(holder.imageViewAvatar);
+				}
+			}/* else if (type == FrontPageFeed.) {
+				// Set the title text
+				holder.textViewTitle.setText("");
+				holder.textViewAuthor.setText("Load next page...");
+				holder.imageViewAvatar
+						.setImageResource(android.R.color.transparent);
+			} else if (item.IsDivider()) {
+				// Set the title text
+				holder.textViewTitle.setText("");
+				holder.textViewAuthor.setText("Page #" + item.GetNumComments());
+				holder.imageViewAvatar
+						.setImageResource(android.R.color.transparent);
+			}
+			*/
+			return itemView;
+		}
+		
+	}
+
+	// Scrapes data off the front page and add the data to the feed
+	//TODO: Make this work with other types (news, recent)
 	private class FrontPage extends AsyncTask<Void, Void, Void> {
 
 		ArrayList<FrontPageItemData> frontPageData;
@@ -476,7 +637,7 @@ public class MainActivity extends ActionBarActivity {
 		protected void onPostExecute(Void result) {
 
 			for (int i = 0; i < frontPageData.size(); ++i) {
-				mainActivity.addFrontPageItem(frontPageData.get(i));
+				mainActivity.addFrontPageItem(frontPageData.get(i), FrontPageFeed.VIEWTYPE_BLOG);
 			}
 			mainActivity.addFrontPageItemNext();
 			mainActivity.regenerateFrontPage();
