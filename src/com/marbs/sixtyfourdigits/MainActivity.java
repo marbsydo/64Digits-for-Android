@@ -35,6 +35,7 @@ import com.marbs.sixtyfourdigits.model.FrontPageFeed;
 import com.marbs.sixtyfourdigits.model.FrontPagePost;
 import com.marbs.sixtyfourdigits.model.FrontPagePostBlog;
 import com.marbs.sixtyfourdigits.model.FrontPagePostDivider;
+import com.marbs.sixtyfourdigits.model.FrontPagePostNext;
 import com.squareup.picasso.Picasso;
 
 public class MainActivity extends ActionBarActivity {
@@ -126,8 +127,8 @@ public class MainActivity extends ActionBarActivity {
 	}
 
 	public void addFrontPageItemNext() {
-		//TODO
-		//addFrontPageItem(new FrontPageItemData(FrontPageItemData.Type.NEXT, -1));
+		FrontPagePost post = (FrontPagePost) new FrontPagePostNext("More");
+		frontPageFeed.addPost(post, FrontPageFeed.VIEWTYPE_NEXT);
 	}
 
 	public void addFrontPageItemDivider(int page) {
@@ -450,10 +451,13 @@ public class MainActivity extends ActionBarActivity {
 					break;
 				case FrontPageFeed.VIEWTYPE_DIVIDER:
 					itemView = inflater.inflate(R.layout.frontpage_divider, parent, false);
-					holder.t1 = (TextView) itemView.findViewById(R.id.textTitle);
+					holder.t1 = (TextView) itemView.findViewById(R.id.textDivider);
+					break;
+				case FrontPageFeed.VIEWTYPE_NEXT:
+					itemView = inflater.inflate(R.layout.frontpage_next, parent, false);
+					holder.t1 = (TextView) itemView.findViewById(R.id.textNext);
 					break;
 				}
-				
 
 				// Cache the holder in the tag
 				// This increases performance by not repeatedly calling findViewById
@@ -478,6 +482,10 @@ public class MainActivity extends ActionBarActivity {
 			case FrontPageFeed.VIEWTYPE_DIVIDER:
 				FrontPagePostDivider itemDivider = (FrontPagePostDivider) item;
 				holder.t1.setText(itemDivider.getTitle());
+				break;
+			case FrontPageFeed.VIEWTYPE_NEXT:
+				FrontPagePostNext itemNext = (FrontPagePostNext) item;
+				holder.t1.setText(itemNext.getTitle());
 				break;
 			}
 
@@ -642,8 +650,8 @@ public class MainActivity extends ActionBarActivity {
 
 			for (int i = 0; i < frontPageData.size(); ++i) {
 				mainActivity.addFrontPageItem(frontPageData.get(i), FrontPageFeed.VIEWTYPE_BLOG);
-				mainActivity.addFrontPageItemDivider(i);
 			}
+			
 			mainActivity.addFrontPageItemNext();
 			mainActivity.regenerateFrontPage();
 
