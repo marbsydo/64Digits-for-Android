@@ -6,10 +6,12 @@ import java.util.List;
 public class FrontPageFeed {
 
 	// Types of frontpage items
-	public static final int VIEWTYPE_NUM = 3;
+	public static final int VIEWTYPE_NUM = 5;
 	public static final int VIEWTYPE_BLOG = 0;
 	public static final int VIEWTYPE_NEWS = 1;
 	public static final int VIEWTYPE_RECENT = 2;
+	public static final int VIEWTYPE_NEXT = 3;
+	public static final int VIEWTYPE_DIVIDER = 4;
 	
 	// Info about the post, including its type
 	public class FrontPagePostInfo {

@@ -34,6 +34,7 @@ import android.widget.TextView;
 import com.marbs.sixtyfourdigits.model.FrontPageFeed;
 import com.marbs.sixtyfourdigits.model.FrontPagePost;
 import com.marbs.sixtyfourdigits.model.FrontPagePostBlog;
+import com.marbs.sixtyfourdigits.model.FrontPagePostDivider;
 import com.squareup.picasso.Picasso;
 
 public class MainActivity extends ActionBarActivity {
@@ -130,9 +131,8 @@ public class MainActivity extends ActionBarActivity {
 	}
 
 	public void addFrontPageItemDivider(int page) {
-		//TODO
-		//addFrontPageItem(new FrontPageItemData(FrontPageItemData.Type.DIVIDER,
-		//		page));
+		FrontPagePost post = (FrontPagePost) new FrontPagePostDivider("Page 3");
+		frontPageFeed.addPost(post, FrontPageFeed.VIEWTYPE_DIVIDER);
 	}
 
 	public void removeLastFrontPageItem() {
@@ -422,10 +422,10 @@ public class MainActivity extends ActionBarActivity {
 		}
 		
 		public class ViewHolder {
-			private TextView textViewTitle;
-			private TextView textViewAuthor;
-			private ImageView imageViewAvatar;
-			private Button buttonBlog;
+			private TextView t1;
+			private TextView t2;
+			private ImageView i1;
+			private Button b1;
 		}
 		
 		@Override
@@ -438,46 +438,50 @@ public class MainActivity extends ActionBarActivity {
 			final int type = getType(position);
 			
 			if (null == itemView) {
-				itemView = inflater.inflate(R.layout.frontpage_item,
-						parent, false);
-
 				holder = new ViewHolder();
+				
+				switch (type) {
+				case FrontPageFeed.VIEWTYPE_BLOG:
+					itemView = inflater.inflate(R.layout.frontpage_item, parent, false);
+					holder.t1 = (TextView) itemView.findViewById(R.id.textTitle);
+					holder.t2 = (TextView) itemView.findViewById(R.id.textAuthor);
+					holder.i1 = (ImageView) itemView.findViewById(R.id.imageAvatar);
+					holder.b1 = (Button) itemView.findViewById(R.id.buttonBlog);
+					break;
+				case FrontPageFeed.VIEWTYPE_DIVIDER:
+					itemView = inflater.inflate(R.layout.frontpage_divider, parent, false);
+					holder.t1 = (TextView) itemView.findViewById(R.id.textTitle);
+					break;
+				}
+				
 
-				holder.textViewTitle = (TextView) itemView
-						.findViewById(R.id.textTitle);
-				holder.textViewAuthor = (TextView) itemView
-						.findViewById(R.id.textAuthor);
-				holder.imageViewAvatar = (ImageView) itemView
-						.findViewById(R.id.imageAvatar);
-				holder.buttonBlog = (Button) itemView
-						.findViewById(R.id.buttonBlog);
-
+				// Cache the holder in the tag
+				// This increases performance by not repeatedly calling findViewById
 				itemView.setTag(holder);
 			} else {
+				// Retrieve the holder from the tag
 				holder = (ViewHolder) itemView.getTag();
 			}
 
-			if (type == FrontPageFeed.VIEWTYPE_BLOG) {
-				
+			switch (type) {
+			case FrontPageFeed.VIEWTYPE_BLOG:
 				FrontPagePostBlog itemBlog = (FrontPagePostBlog) item;
-				
-				// Set the title text
-				holder.textViewTitle.setText(itemBlog.getTitle());
-				
-				// Set the author text
-				holder.textViewAuthor.setText(itemBlog.getQueryUserid());
-				
-				// Set the button text
-				holder.buttonBlog.setText(itemBlog.getNumComments() + "");
-
+				holder.t1.setText(itemBlog.getTitle());
+				holder.t2.setText(itemBlog.getQueryUserid());
+				holder.b1.setText(itemBlog.getNumComments() + "");
 				// Tell Picasso to load the avatar into the image view
 				if (itemBlog.getImageUrl().length() > 0) {
-					holder.imageViewAvatar
-							.setImageResource(android.R.color.white);
-					Picasso.with(mainActivityContext).load(itemBlog.getImageUrl())
-							.into(holder.imageViewAvatar);
+					holder.i1.setImageResource(android.R.color.white);
+					Picasso.with(mainActivityContext).load(itemBlog.getImageUrl()).into(holder.i1);
 				}
-			}/* else if (type == FrontPageFeed.) {
+				break;
+			case FrontPageFeed.VIEWTYPE_DIVIDER:
+				FrontPagePostDivider itemDivider = (FrontPagePostDivider) item;
+				holder.t1.setText(itemDivider.getTitle());
+				break;
+			}
+
+			/* else if (type == FrontPageFeed.) {
 				// Set the title text
 				holder.textViewTitle.setText("");
 				holder.textViewAuthor.setText("Load next page...");
@@ -638,6 +642,7 @@ public class MainActivity extends ActionBarActivity {
 
 			for (int i = 0; i < frontPageData.size(); ++i) {
 				mainActivity.addFrontPageItem(frontPageData.get(i), FrontPageFeed.VIEWTYPE_BLOG);
+				mainActivity.addFrontPageItemDivider(i);
 			}
 			mainActivity.addFrontPageItemNext();
 			mainActivity.regenerateFrontPage();
