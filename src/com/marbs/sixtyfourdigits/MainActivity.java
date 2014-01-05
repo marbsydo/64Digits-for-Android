@@ -67,7 +67,7 @@ public class MainActivity extends ActionBarActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-		listview = (ListView) findViewById(R.id.frontPageListView);
+		listview = (ListView) findViewById(R.id.frontPageBlogsListView);
 		adapater = new FrontPageAdapter();
 		
 		frontPageFeed = new FrontPageFeed();
@@ -79,15 +79,15 @@ public class MainActivity extends ActionBarActivity {
 		tabHost.setup();
 		
 		TabSpec spec1 = tabHost.newTabSpec("TAB 1");
-		spec1.setContent(R.id.tab1);
+		spec1.setContent(R.id.tabBlogs);
 		spec1.setIndicator("Blogs");
 		
 		TabSpec spec2 = tabHost.newTabSpec("TAB 2");
-		spec2.setContent(R.id.tab2);
+		spec2.setContent(R.id.tabRecent);
 		spec2.setIndicator("Recent");
 		
 		TabSpec spec3 = tabHost.newTabSpec("TAB 3");
-		spec3.setContent(R.id.tab3);
+		spec3.setContent(R.id.tabNews);
 		spec3.setIndicator("News");
 		
 		tabHost.addTab(spec1);

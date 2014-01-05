@@ -30,31 +30,42 @@
                 android:layout_height="match_parent" >
 
                 <LinearLayout
-                    android:id="@+id/tab1"
+                    android:id="@+id/tabBlogs"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:orientation="vertical" >
 
                     <ListView
-                        android:id="@+id/frontPageListView"
+                        android:id="@+id/frontPageBlogsListView"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent" >
                     </ListView>
-
                 </LinearLayout>
 
                 <LinearLayout
-                    android:id="@+id/tab2"
+                    android:id="@+id/tabRecent"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:orientation="vertical" >
+
+                    <ListView
+                        android:id="@+id/frontPageRecentListView"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" >
+                    </ListView>
                 </LinearLayout>
 
                 <LinearLayout
-                    android:id="@+id/tab3"
+                    android:id="@+id/tabNews"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:orientation="vertical" >
+
+                    <ListView
+                        android:id="@+id/frontPageNewsListView"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" >
+                    </ListView>
                 </LinearLayout>
             </FrameLayout>
         </LinearLayout>
