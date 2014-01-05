@@ -31,6 +31,8 @@ import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TabHost;
+import android.widget.TabHost.TabSpec;
 import android.widget.TextView;
 
 import com.marbs.sixtyfourdigits.model.FrontPageFeed;
@@ -65,12 +67,32 @@ public class MainActivity extends ActionBarActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-		listview = (ListView) findViewById(R.id.listview);
+		listview = (ListView) findViewById(R.id.frontPageListView);
 		adapater = new FrontPageAdapter();
 		
 		frontPageFeed = new FrontPageFeed();
 		
 		refreshFrontPage();
+		
+		// Set up the tabs
+		TabHost tabHost = (TabHost) findViewById(R.id.tabhost);
+		tabHost.setup();
+		
+		TabSpec spec1 = tabHost.newTabSpec("TAB 1");
+		spec1.setContent(R.id.tab1);
+		spec1.setIndicator("Blogs");
+		
+		TabSpec spec2 = tabHost.newTabSpec("TAB 2");
+		spec2.setContent(R.id.tab2);
+		spec2.setIndicator("Recent");
+		
+		TabSpec spec3 = tabHost.newTabSpec("TAB 3");
+		spec3.setContent(R.id.tab3);
+		spec3.setIndicator("News");
+		
+		tabHost.addTab(spec1);
+		tabHost.addTab(spec2);
+		tabHost.addTab(spec3);
 	}
 
 	@Override
