@@ -57,4 +57,21 @@ public class FrontPageFeed {
 	public int size() {
 		return posts.size();
 	}
+	/*
+	public List<FrontPagePostInfo> getPostInfos() {
+		return posts;
+	}
+	
+	public void appendFeed(FrontPageFeed feed) {
+		if (feed == null) {
+			return;
+		}
+		
+		for (FrontPagePostInfo candidate : feed.getPostInfos()) {
+			if (!posts.contains(candidate)) {
+				posts.add(candidate);
+			}
+		}
+	}
+	*/
 }

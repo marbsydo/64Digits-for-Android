@@ -31,6 +31,8 @@
                 android:textSize="24sp"
                 android:textStyle="bold" />
 
+            <!-- Divider between title and blog -->
+
             <View
                 android:layout_width="fill_parent"
                 android:layout_height="2dp"

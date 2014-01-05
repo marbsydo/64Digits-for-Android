@@ -4,7 +4,8 @@
     android:layout_height="@dimen/frontpage_next_height"
     android:baselineAligned="false"
     android:gravity="center"
-    android:background="#f4f4f4" >
+    android:background="#C03C3C"
+    >
 
     <TextView
         android:id="@+id/textNext"
@@ -14,6 +15,7 @@
         android:maxLines="2"
         android:text="@string/frontpage_next"
         android:textSize="22sp"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        android:textColor="#F4F4F4" />
 
 </RelativeLayout>

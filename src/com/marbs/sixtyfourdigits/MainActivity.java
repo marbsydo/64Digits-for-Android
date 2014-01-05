@@ -41,9 +41,14 @@ import com.marbs.sixtyfourdigits.model.FrontPagePostNext;
 import com.squareup.picasso.Picasso;
 
 public class MainActivity extends ActionBarActivity {
-
+	
+	FrontPageAdapter adapater;
+	ListView listview;
+	
 	LayoutInflater inflater;
 	FrontPageFeed frontPageFeed;
+	
+	boolean alreadyGenerated = false;
 	
 	int page;
 	int scrollToAfterRegenerate = -1;
@@ -53,8 +58,19 @@ public class MainActivity extends ActionBarActivity {
 
 	public MainActivity() {
 		super();
-		frontPageFeed = new FrontPageFeed();
 		page = 0;
+	}
+
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_main);
+		listview = (ListView) findViewById(R.id.listview);
+		adapater = new FrontPageAdapter();
+		
+		frontPageFeed = new FrontPageFeed();
+		
+		refreshFrontPage();
 	}
 
 	@Override
@@ -143,19 +159,10 @@ public class MainActivity extends ActionBarActivity {
 	}
 
 	public void regenerateFrontPage() {
-		
-		final ListView listview = (ListView) findViewById(R.id.listview);
-		
-		final FrontPageAdapter adapater = new FrontPageAdapter();
+
 		listview.setAdapter(adapater);
-		/*
-		final FrontPageItemAdapter adapter = new FrontPageItemAdapter(this,
-				R.layout.frontpage_item, frontPageData);
-		listview.setAdapter(adapter);
-		*/
-		
+
 		// This makes all the items clickable
-		
 		listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> parent, final View view,
@@ -164,23 +171,9 @@ public class MainActivity extends ActionBarActivity {
 				switch (frontPageFeed.getType(position)) {
 				case FrontPageFeed.VIEWTYPE_NEXT:
 					// Clicked the next button (which is always at the bottom)
-
-					// Work out what position we should scroll to when the list
-					// has been regenerated
-					// This is done because when the list is regenerated, the
-					// view scroll back to the top
-					// TODO: It might be possible to avoid this messy solution
-					// by regenerating the list
-					// in a neater way that doesn't have the side effect of
-					// shifting the view
-					int visibleChildCount = (listview.getLastVisiblePosition() - listview
-							.getFirstVisiblePosition()) - 1;
+					int visibleChildCount = (listview.getLastVisiblePosition() - listview.getFirstVisiblePosition()) - 1;
 					scrollToAfterRegenerate = position - visibleChildCount;
-
-					// Remove the last item, which is this button that was just
-					// pressed
 					removeLastFrontPageItem();
-
 					// Create a divider and load the next page
 					page++;
 					addFrontPageItemDivider(page + 1); // +1 because humans count from 1 not 0
@@ -286,14 +279,6 @@ public class MainActivity extends ActionBarActivity {
 		public boolean IsError() {
 			return type == Type.ERROR;
 		}
-	}
-
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_main);
-
-		refreshFrontPage();
 	}
 
 	/*
