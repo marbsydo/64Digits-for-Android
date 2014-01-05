@@ -16,6 +16,7 @@ import org.jsoup.select.Elements;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -74,12 +75,20 @@ public class MainActivity extends ActionBarActivity {
 		
 		refreshFrontPage();
 		
-		// Set up the tabs
+		// Set up the tab host
 		TabHost tabHost = (TabHost) findViewById(R.id.tabhost);
 		tabHost.setup();
 		
+		// Set up the tab styles
+		/*
+		TextView asdf = new TextView(this);
+		asdf.setText("Blogs");
+		asdf.setTextColor(Color.RED);
+		*/
+		// Create tabs and apply styles
 		TabSpec spec1 = tabHost.newTabSpec("TAB 1");
 		spec1.setContent(R.id.tabBlogs);
+		//spec1.setIndicator(asdf);
 		spec1.setIndicator("Blogs");
 		
 		TabSpec spec2 = tabHost.newTabSpec("TAB 2");
@@ -90,6 +99,7 @@ public class MainActivity extends ActionBarActivity {
 		spec3.setContent(R.id.tabNews);
 		spec3.setIndicator("News");
 		
+		// Add tabs to tab host
 		tabHost.addTab(spec1);
 		tabHost.addTab(spec2);
 		tabHost.addTab(spec3);
