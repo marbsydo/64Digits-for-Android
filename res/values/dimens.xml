@@ -1,0 +1,14 @@
+<resources>
+
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="blog_horizontal_margin">0dp</dimen>
+    <dimen name="blog_vertical_margin">0dp</dimen>
+    <dimen name="frontpage_avatar_width">80dp</dimen>
+    <dimen name="frontpage_avatar_height">80dp</dimen>
+    <dimen name="frontpage_numcomments_width">60dp</dimen>
+    <dimen name="frontpage_item_height">80dp</dimen>
+    <dimen name="frontpage_next_height">40dp</dimen>
+    <dimen name="frontpage_divider_height">40dp</dimen>
+    <color name="red_64">#C20000</color>
+
+</resources>
