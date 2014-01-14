@@ -74,35 +74,6 @@ public class MainActivity extends ActionBarActivity {
 		frontPageFeed = new FrontPageFeed();
 		
 		refreshFrontPage();
-		
-		// Set up the tab host
-		TabHost tabHost = (TabHost) findViewById(R.id.tabhost);
-		tabHost.setup();
-		
-		// Set up the tab styles
-		/*
-		TextView asdf = new TextView(this);
-		asdf.setText("Blogs");
-		asdf.setTextColor(Color.RED);
-		*/
-		// Create tabs and apply styles
-		TabSpec spec1 = tabHost.newTabSpec("TAB 1");
-		spec1.setContent(R.id.tabBlogs);
-		//spec1.setIndicator(asdf);
-		spec1.setIndicator("Blogs");
-		
-		TabSpec spec2 = tabHost.newTabSpec("TAB 2");
-		spec2.setContent(R.id.tabRecent);
-		spec2.setIndicator("Recent");
-		
-		TabSpec spec3 = tabHost.newTabSpec("TAB 3");
-		spec3.setContent(R.id.tabNews);
-		spec3.setIndicator("News");
-		
-		// Add tabs to tab host
-		tabHost.addTab(spec1);
-		tabHost.addTab(spec2);
-		tabHost.addTab(spec3);
 	}
 
 	@Override

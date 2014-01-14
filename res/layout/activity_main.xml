@@ -8,67 +8,10 @@
     android:paddingTop="0dp"
     tools:context=".MainActivity" >
 
-    <TabHost
-        android:id="@+id/tabhost"
+    <ListView
+        android:id="@+id/frontPageBlogsListView"
         android:layout_width="match_parent"
         android:layout_height="match_parent" >
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical" >
-
-            <TabWidget
-                android:id="@android:id/tabs"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" >
-            </TabWidget>
-
-            <FrameLayout
-                android:id="@android:id/tabcontent"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" >
-
-                <LinearLayout
-                    android:id="@+id/tabBlogs"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical" >
-
-                    <ListView
-                        android:id="@+id/frontPageBlogsListView"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent" >
-                    </ListView>
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/tabRecent"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical" >
-
-                    <ListView
-                        android:id="@+id/frontPageRecentListView"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent" >
-                    </ListView>
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/tabNews"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical" >
-
-                    <ListView
-                        android:id="@+id/frontPageNewsListView"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent" >
-                    </ListView>
-                </LinearLayout>
-            </FrameLayout>
-        </LinearLayout>
-    </TabHost>
+    </ListView>
 
 </RelativeLayout>
