@@ -18,5 +18,7 @@
     <string name="default_blog_author">Unseen author</string>
     <string name="frontpage_next">Next</string>
     <string name="frontpage_divider">Divider</string>
+    <string name="drawer_open">Open</string>
+	<string name="drawer_close">Close</string>
 
 </resources>
